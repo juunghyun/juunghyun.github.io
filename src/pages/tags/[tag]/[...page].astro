@@ -1,0 +1,10 @@
+---
+import type { GetStaticPaths } from "astro";
+import TagPage from "@/components/pages/TagPage.astro";
+import { getTagPaths } from "@/utils/routes";
+
+export const getStaticPaths = (async options =>
+  getTagPaths("ko", options)) satisfies GetStaticPaths;
+---
+
+<TagPage page={Astro.props.page} tagName={Astro.props.tagName} />

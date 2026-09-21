@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./typography.css";
+@import "rehype-callouts/theme/obsidian";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  a,
+  button {
+    @apply outline-accent outline-offset-1 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* 본문 폭: 한글 한 줄 35~45자 (PRD 6절) */
+@utility max-w-app {
+  max-width: 45rem;
+}
+
+@utility app-layout {
+  @apply max-w-app mx-auto w-full px-4;
+}
+
+@utility active-nav {
+  @apply underline decoration-wavy decoration-2 underline-offset-8;
+}
+
+:target {
+  scroll-margin-block: 1rem;
+}
+
+/* 한글 줄바꿈은 어절 단위로 */
+html[lang="ko"] body {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-code), ui-monospace, SFMono-Regular, Menlo, monospace;
+}

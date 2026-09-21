@@ -1,35 +1,63 @@
 # tech-blog
 
-개인 테크 블로그 프로젝트. 기획 문서와 도구를 모아 두고, Phase 0에서 Astro(AstroPaper) 사이트를 이 레포에 얹는다.
+이정현의 개인 테크 블로그. Astro + AstroPaper 위에 한국어(`/`)·영어(`/en/`) 두 언어를 얹은 정적 사이트다.
 GitHub Pages 사용자 사이트로 배포할 때 레포 이름을 `juunghyun.github.io`로 바꾼다.
-
-## 구성
-
-| 경로 | 내용 |
-| --- | --- |
-| `docs/PRD.md` | PRD 마크다운. 정본은 Claude Doc이고 이 파일은 2026-09-21 내보내기본에 사례 분석을 반영한 사본 |
-| `docs/PRD.html` | 읽기용 HTML. 개인 디자인시스템 report 템플릿으로 렌더 |
-| `docs/PLAN.md` | 실행 계획. Phase 0·1을 주 단위로, 담당과 기한 포함 |
-| `docs/PLAN.html` | 실행 계획 읽기용 HTML |
-| `tools/md2report.py` | 마크다운을 읽기용 HTML로 변환하는 스크립트 |
 
 PRD 정본(Claude Doc): https://claude.ai/code/artifact/057aee8b-6630-48b6-bb7e-fcbaf0b02009
 
-## HTML 다시 만들기
+## 실행
 
 ```sh
-python3 tools/md2report.py docs/PRD.md ~/.claude/skills/design-system/templates/report.html docs/PRD.html
-python3 tools/md2report.py docs/PLAN.md ~/.claude/skills/design-system/templates/report.html docs/PLAN.html
+pnpm install
+pnpm dev          # http://localhost:4321
+pnpm run build    # astro check + build + pagefind 색인
+pnpm preview
+pnpm lint && pnpm format:check
 ```
 
-## 확정된 결정 요약 (2026-09-21)
+Node 22.12 이상, pnpm 11.
 
-- 구축: 하이브리드. 정적 사이트 + giscus(댓글·반응) + GoatCounter(조회수·분석), 상호작용은 어댑터 뒤에 두고 Phase 3에서 Kotlin/Spring 직접 서비스로 교체 가능
-- 프레임워크 Astro, 테마 AstroPaper 기본 디자인
-- 호스팅 GitHub Pages, 공개 레포, GitHub Actions 배포
-- 한국어 `/` + 영어 `/en/` 병행 발행, 격주 1편. 번역은 필자가 직접 하고 윤문
-- Phase 1 필수: 글별 공개 조회수, Pagefind 검색, 시리즈·태그, About·프로젝트, 이름·도메인 결정
+## 구조
 
-## 다음 단계 (Phase 0, 목표 2026-09-28)
+| 경로 | 내용 |
+| --- | --- |
+| `astro-paper.config.ts` | 사이트 제목·URL·작성자·기능 토글 |
+| `src/interactions.config.ts` | 댓글(giscus)·조회수(GoatCounter) 설정. id 를 비우면 해당 기능이 조용히 꺼진다 |
+| `src/content/posts/{ko,en}/<slug>.md` | 글. 한·영은 같은 파일명(slug)을 쓴다 |
+| `src/content/pages/{ko,en}/about.md` | 소개 페이지 |
+| `src/i18n/lang/{ko,en}.ts` | UI 문구 |
+| `src/utils/i18n.ts` | 언어 판정·번역 글 찾기·hreflang 대응 URL |
+| `src/utils/routes.ts` | 언어별 getStaticPaths 공용 헬퍼 |
+| `src/components/pages/*` | 페이지 본체. `src/pages/*`(ko)와 `src/pages/en/*`는 이걸 감싸는 얇은 라우트 |
+| `src/components/interactions/*` | Comments · ViewCount · Analytics 어댑터 |
+| `src/components/post/SeriesNav.astro` | 시리즈 목록·순서 |
+| `docs/PRD.md`, `docs/PLAN.md` | 기획서와 실행 계획 (`docs/*.html` 은 읽기용 렌더) |
+| `tools/md2report.py` | docs 마크다운을 HTML 로 변환 |
 
-블로그 이름·도메인 결정, AstroPaper 설치, i18n 구조 확인, Actions 배포, giscus·GoatCounter 계정.
+## 글 쓰기
+
+```yaml
+---
+title: 제목
+description: 한두 문장 요약 (검색 결과·OG 에 쓰인다)
+pubDatetime: 2026-10-05T09:00:00+09:00
+tags: [Kotlin, Spring]
+series: jpa-pitfalls   # 선택
+seriesOrder: 1         # 선택
+draft: false
+---
+```
+
+- 같은 slug 로 `ko/`와 `en/`에 각각 두면 언어 전환 링크와 hreflang 이 자동으로 이어진다.
+- 발행 시각이 미래면 빌드에서 빠진다(예약 발행).
+- OG 이미지는 글마다 자동 생성된다(Noto Sans KR).
+
+## 배포
+
+`main` 에 푸시하면 `.github/workflows/deploy.yml` 이 빌드해 GitHub Pages 에 올린다. 레포 설정에서 Pages 소스를 GitHub Actions 로 둔다.
+
+## 다음 단계
+
+`docs/PLAN.md` 참고. giscus·GoatCounter id 는 계정을 만든 뒤 `src/interactions.config.ts` 에 넣는다.
+
+라이선스: 테마 AstroPaper(MIT, `LICENSE.astro-paper`). 글 저작권은 필자에게 있다.

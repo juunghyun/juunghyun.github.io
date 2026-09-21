@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { resolveLocale } from "@/utils/i18n";
+import { tplStr, useTranslations } from "@/i18n";
+
+type Props = {
+  current: CollectionEntry<"posts">;
+  /** 같은 언어·같은 시리즈의 글, seriesOrder 오름차순 */
+  seriesPosts: CollectionEntry<"posts">[];
+};
+
+const { current, seriesPosts } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const series = current.data.series;
+const index = seriesPosts.findIndex(post => post.id === current.id);
+---
+
+{
+  series && seriesPosts.length > 1 && (
+    <nav
+      aria-label={t.post.series}
+      data-pagefind-ignore
+      class="border-border bg-muted/30 my-6 rounded-lg border px-4 py-3"
+    >
+      <p class="text-sm">
+        <span class="text-muted-foreground">{t.post.series}:</span>
+        <strong class="ms-1">{series}</strong>
+        <span class="text-muted-foreground ms-2">
+          {tplStr(t.post.seriesPart, {
+            current: index + 1,
+            total: seriesPosts.length,
+          })}
+        </span>
+      </p>
+      <ol class="mt-2 list-decimal space-y-1 ps-6 text-sm">
+        {seriesPosts.map(post =>
+          post.id === current.id ? (
+            <li aria-current="page" class="font-semibold">
+              {post.data.title}
+            </li>
+          ) : (
+            <li>
+              <a
+                href={getPostUrl(post.id, post.filePath, locale)}
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+              >
+                {post.data.title}
+              </a>
+            </li>
+          )
+        )}
+      </ol>
+    </nav>
+  )
+}

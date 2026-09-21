@@ -1,0 +1,30 @@
+---
+/**
+ * 방문자 분석 스크립트. GoatCounter 코드가 설정된 경우에만 나간다.
+ * count.js 는 최초 로드만 세므로 View Transitions 이동은 after-swap 에서 따로 센다.
+ */
+import interactions, { viewsEnabled } from "@/interactions.config";
+
+const endpoint = `https://${interactions.views.code}.goatcounter.com/count`;
+---
+
+{
+  viewsEnabled && (
+    <script
+      is:inline
+      data-goatcounter={endpoint}
+      async
+      src="//gc.zgo.at/count.js"
+    />
+  )
+}
+
+<script>
+  type Counter = { count: (options: { path: string }) => void };
+
+  document.addEventListener("astro:after-swap", () => {
+    const counter = (window as unknown as { goatcounter?: Counter })
+      .goatcounter;
+    counter?.count({ path: location.pathname + location.search });
+  });
+</script>

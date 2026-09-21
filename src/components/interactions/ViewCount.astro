@@ -1,0 +1,54 @@
+---
+/**
+ * 글별 공개 조회수. Phase 1 제공자는 GoatCounter 의 counter JSON (최대 4시간 캐시).
+ * 코드가 없으면 아무것도 그리지 않는다.
+ */
+import interactions, { viewsEnabled } from "@/interactions.config";
+import { resolveLocale } from "@/utils/i18n";
+import { useTranslations } from "@/i18n";
+
+type Props = {
+  /** 집계할 페이지 경로. 언어별 URL 마다 따로 센다. */
+  path: string;
+  class?: string;
+};
+
+const { path, class: className = "" } = Astro.props;
+const t = useTranslations(resolveLocale(Astro.currentLocale));
+const endpoint = `https://${interactions.views.code}.goatcounter.com/counter/${encodeURIComponent(path)}.json`;
+---
+
+{
+  viewsEnabled && (
+    <span
+      class:list={["text-muted-foreground text-sm sm:text-base", className]}
+      data-view-count
+      data-endpoint={endpoint}
+    >
+      <span data-view-count-value>–</span> {t.post.views}
+    </span>
+  )
+}
+
+<script>
+  async function loadViewCounts() {
+    const targets = document.querySelectorAll<HTMLElement>("[data-view-count]");
+    for (const target of targets) {
+      const endpoint = target.dataset.endpoint;
+      if (!endpoint || target.dataset.loaded) continue;
+      target.dataset.loaded = "1";
+      try {
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error(String(response.status));
+        const payload = (await response.json()) as { count?: string };
+        const value = target.querySelector("[data-view-count-value]");
+        if (value && payload.count) value.textContent = payload.count;
+      } catch {
+        target.remove();
+      }
+    }
+  }
+
+  loadViewCounts();
+  document.addEventListener("astro:page-load", loadViewCounts);
+</script>

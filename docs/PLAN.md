@@ -4,6 +4,23 @@
 
 PRD(docs/PRD.md)를 바탕으로 Phase 0과 Phase 1을 주 단위로 쪼갠 계획이다. 번역은 필자가 직접 영어로 옮긴 뒤 윤문한다. Claude Code는 구축·설정·코드 검증·발행 절차를 맡는다. 시작은 2026-09-22, Phase 1 완료 목표는 2026-10-19다.
 
+## 0. 진행 상태 (2026-09-21 기준)
+
+| 항목 | 상태 | 비고 |
+| --- | --- | --- |
+| 0.1 스캐폴딩 | 완료 | AstroPaper v6.1.0(Astro 6.4) 을 레포에 병합, pnpm 설치 |
+| 0.2 사이트 설정 | 완료 | 제목은 임시 `juunghyun`, 이름 결정 시 변경 |
+| 0.3 GitHub 레포 | 보류 | 사용자 결정으로 나중에 생성. 생성 후 `main` 푸시하면 배포 워크플로우가 돈다 |
+| 0.4 i18n 구조 | 완료 | ko `/`, en `/en/`, 같은 slug 로 번역 연결, hreflang·sitemap 대체 링크·언어별 RSS·OG 한글 폰트 |
+| 0.5 배포 | 워크플로우만 완료 | `.github/workflows/deploy.yml`. 실제 배포는 0.3 이후 |
+| 0.6 계정 | 대기 | giscus·GoatCounter 는 사용자 작업. id 를 `src/interactions.config.ts` 에 넣으면 켜진다 |
+| 0.7 상호작용 어댑터 | 완료 | Comments(giscus, 반응 포함)·ViewCount·Analytics. id 없으면 안내 문구만 |
+| 1.3 시리즈·태그 | 완료 | frontmatter series/seriesOrder, SeriesNav, 언어별 태그 페이지 |
+| 1.4 읽기 기준 | 완료 | Pretendard 웹폰트, 본문 폭 45rem, keep-all, 코드 폰트 분리. Lighthouse 는 배포 후 측정 |
+| 1.5 OG 한글 | 완료 | Noto Sans KR 로 satori 렌더, 한글 제목 확인 |
+
+로컬 검증: `pnpm run build` 17페이지, `pnpm lint`·`pnpm format:check` 통과, 한·영 글 페이지에 hreflang 3종과 언어 전환 링크 확인.
+
 ## 1. 역할
 
 | 영역 | Claude Code | 필자 |

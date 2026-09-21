@@ -1,0 +1,103 @@
+---
+/**
+ * 댓글·반응 어댑터. Phase 1 제공자는 giscus(GitHub Discussions).
+ * 반응(👍 ❤️ 등)은 giscus 위젯 상단에 함께 나온다.
+ */
+import interactions, { commentsEnabled } from "@/interactions.config";
+import { resolveLocale } from "@/utils/i18n";
+import { useTranslations } from "@/i18n";
+
+type Props = {
+  /** 한·영 글이 공유하는 키. termStrategy 가 shared-slug 일 때 Discussion 제목이 된다. */
+  slug: string;
+};
+
+const { slug } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const comments = interactions.comments;
+const mapping =
+  comments.termStrategy === "shared-slug" ? "specific" : "pathname";
+---
+
+<section id="comments" data-pagefind-ignore class="mt-10">
+  <h2 class="text-xl font-semibold">{t.interactions.commentsTitle}</h2>
+  {
+    commentsEnabled ? (
+      <div
+        id="giscus-container"
+        class="mt-4"
+        data-repo={comments.repo}
+        data-repo-id={comments.repoId}
+        data-category={comments.category}
+        data-category-id={comments.categoryId}
+        data-mapping={mapping}
+        data-term={slug}
+        data-lang={locale}
+        data-reactions-enabled={comments.reactionsEnabled ? "1" : "0"}
+      />
+    ) : (
+      <p class="text-muted-foreground mt-2 text-sm">
+        {t.interactions.commentsPending}
+      </p>
+    )
+  }
+</section>
+
+<script>
+  const GISCUS_ORIGIN = "https://giscus.app";
+
+  function currentTheme(): "light" | "dark" {
+    return document.documentElement.getAttribute("data-theme") === "dark"
+      ? "dark"
+      : "light";
+  }
+
+  function mountGiscus() {
+    const container = document.querySelector<HTMLElement>("#giscus-container");
+    if (!container || container.querySelector("script, iframe")) return;
+
+    const script = document.createElement("script");
+    script.src = `${GISCUS_ORIGIN}/client.js`;
+    script.async = true;
+    script.crossOrigin = "anonymous";
+
+    const attrs: Record<string, string | undefined> = {
+      "data-repo": container.dataset.repo,
+      "data-repo-id": container.dataset.repoId,
+      "data-category": container.dataset.category,
+      "data-category-id": container.dataset.categoryId,
+      "data-mapping": container.dataset.mapping,
+      "data-term": container.dataset.term,
+      "data-strict": "1",
+      "data-reactions-enabled": container.dataset.reactionsEnabled,
+      "data-emit-metadata": "0",
+      "data-input-position": "top",
+      "data-theme": currentTheme(),
+      "data-lang": container.dataset.lang,
+      "data-loading": "lazy",
+    };
+    for (const [key, value] of Object.entries(attrs)) {
+      if (value !== undefined) script.setAttribute(key, value);
+    }
+    container.appendChild(script);
+  }
+
+  function syncGiscusTheme() {
+    const frame = document.querySelector<HTMLIFrameElement>(
+      "iframe.giscus-frame"
+    );
+    frame?.contentWindow?.postMessage(
+      { giscus: { setConfig: { theme: currentTheme() } } },
+      GISCUS_ORIGIN
+    );
+  }
+
+  mountGiscus();
+  document.addEventListener("astro:page-load", mountGiscus);
+
+  new MutationObserver(syncGiscusTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+</script>

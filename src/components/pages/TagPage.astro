@@ -1,0 +1,42 @@
+---
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Main from "@/components/Main.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
+import Pagination from "@/components/Pagination.astro";
+import { getAlternates, otherLocale, resolveLocale } from "@/utils/i18n";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+type Props = { page: Page<CollectionEntry<"posts">>; tagName: string };
+
+const { page, tagName } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+// 태그 페이지는 다른 언어에 같은 태그가 없을 수 있어 태그 목록으로 보낸다.
+const alternates = getAlternates(Astro.url.pathname, locale, {
+  [otherLocale(locale)]: null,
+});
+---
+
+<Layout
+  title={`${t.pages.tagTitle}: ${tagName} | ${config.site.title}`}
+  {alternates}
+>
+  <Header />
+  <Breadcrumb />
+  <Main
+    pageTitle={`${t.pages.tagTitle}: ${tagName}`}
+    pageDesc={`${t.pages.tagDesc} "${tagName}".`}
+  >
+    <ul>
+      {page.data.map(data => <Card {...data} />)}
+    </ul>
+  </Main>
+  <Pagination {page} />
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>

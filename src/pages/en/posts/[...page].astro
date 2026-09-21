@@ -1,0 +1,10 @@
+---
+import type { GetStaticPaths } from "astro";
+import PostListPage from "@/components/pages/PostListPage.astro";
+import { getPostListPaths } from "@/utils/routes";
+
+export const getStaticPaths = (async options =>
+  getPostListPaths("en", options)) satisfies GetStaticPaths;
+---
+
+<PostListPage page={Astro.props.page} />

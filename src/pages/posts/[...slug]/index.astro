@@ -1,0 +1,8 @@
+---
+import PostPage from "@/components/pages/PostPage.astro";
+import { getPostPagePaths } from "@/utils/routes";
+
+export const getStaticPaths = () => getPostPagePaths("ko");
+---
+
+<PostPage {...Astro.props} />
