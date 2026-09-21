@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개인 테크 블로그 PRD</title>
+<style>
+/* ==== tokens (원본: ../tokens.css — 색·컴포넌트 수정은 원본에서) ==== */
+:root {
+  --blue-50:#EFF6FF; --blue-100:#DBEAFE; --blue-300:#93C5FD; --blue-500:#3B82F6;
+  --blue-600:#2563EB; --blue-700:#1D4ED8; --blue-800:#1E40AF;
+  --slate-50:#F8FAFC; --slate-100:#F1F5F9; --slate-200:#E2E8F0; --slate-300:#CBD5E1;
+  --slate-400:#94A3B8; --slate-500:#64748B; --slate-600:#475569; --slate-900:#0F172A;
+  --success:#059669; --success-bg:#ECFDF5; --warning:#B45309; --warning-bg:#FFFBEB;
+  --danger:#DC2626; --danger-bg:#FEF2F2;
+  --brand:var(--blue-600); --brand-soft:var(--blue-50);
+  --text:var(--slate-900); --text-2:var(--slate-600); --text-3:var(--slate-400);
+  --bg:#FFFFFF; --bg-soft:var(--slate-50); --border:var(--slate-200);
+  --font-sans:"Wanted Sans Variable","Wanted Sans",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius-sm:8px; --radius:12px; --radius-lg:16px;
+  --shadow-sm:0 1px 2px rgb(15 23 42 / .05);
+  --chart-hero:var(--blue-600);
+  --code-kw:#1D4ED8; --code-str:#059669; --code-num:#B45309; --code-fn:#7C3AED; --code-cm:#94A3B8;
+}
+* { box-sizing:border-box; }
+body { font-family:var(--font-sans); color:var(--text); background:var(--bg); line-height:1.7; word-break:keep-all; -webkit-font-smoothing:antialiased; margin:0; font-size:15px; }
+h1,h2,h3 { line-height:1.3; letter-spacing:-0.01em; font-weight:700; margin:0 0 .5em; }
+h1 { font-size:28px; } h2 { font-size:22px; margin-top:2.2em; } h3 { font-size:17px; margin-top:1.6em; }
+p { margin:0 0 1em; } a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
+ul, ol { padding-left:22px; margin:0 0 1em; } li { margin-bottom:4px; }
+code { font-family:var(--font-mono); font-size:.88em; background:var(--slate-100); border-radius:6px; padding:.15em .4em; }
+pre { font-family:var(--font-mono); font-size:13px; background:var(--slate-100); border-radius:var(--radius-sm); padding:14px 16px; overflow-x:auto; line-height:1.6; }
+pre code { background:none; padding:0; }
+.num, td.num { font-variant-numeric:tabular-nums; }
+.card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); padding:20px 24px; }
+.badge { display:inline-block; font-size:12px; font-weight:600; padding:2px 10px; border-radius:999px; background:var(--brand-soft); color:var(--blue-700); }
+.badge.ok { background:var(--success-bg); color:var(--success); }
+.badge.warn { background:var(--warning-bg); color:var(--warning); }
+.badge.danger { background:var(--danger-bg); color:var(--danger); }
+table { border-collapse:collapse; width:100%; font-size:14px; margin:0 0 1em; }
+th,td { padding:9px 14px; border-bottom:1px solid var(--border); text-align:left; }
+th { background:var(--bg-soft); font-weight:600; font-size:13px; color:var(--text-2); }
+td.num, th.num { text-align:right; }
+.callout { border:1px solid var(--border); border-left:3px solid var(--brand); background:var(--brand-soft); border-radius:var(--radius-sm); padding:14px 18px; font-size:14px; margin:16px 0; }
+.callout.warn { border-left-color:var(--warning); background:var(--warning-bg); }
+.callout.danger { border-left-color:var(--danger); background:var(--danger-bg); }
+.callout.neutral { border-left-color:var(--slate-400); background:var(--bg-soft); }
+.callout-title { font-weight:700; font-size:13px; margin-bottom:4px; }
+.callout p:last-child { margin-bottom:0; }
+blockquote { margin:16px 0; padding:4px 20px; border-left:3px solid var(--blue-300); color:var(--text-2); }
+.toc { background:var(--bg-soft); border:1px solid var(--border); border-radius:var(--radius); padding:18px 26px; font-size:14px; margin:24px 0; }
+.toc-title { font-size:12px; font-weight:700; color:var(--text-2); letter-spacing:.08em; margin-bottom:8px; }
+.toc ol { margin:0; padding-left:20px; line-height:2; }
+.toc a { color:var(--text); } .toc a:hover { color:var(--brand); }
+.steps { list-style:none; margin:16px 0; padding:0; }
+.steps li { position:relative; padding:0 0 20px 28px; }
+.steps li::before { content:""; position:absolute; left:0; top:7px; width:10px; height:10px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+.steps li::after { content:""; position:absolute; left:4px; top:22px; bottom:4px; width:2px; background:var(--border); }
+.steps li:last-child { padding-bottom:0; } .steps li:last-child::after { display:none; }
+.step-title { font-weight:600; } .step-meta { font-size:13px; color:var(--text-3); }
+.tok-kw { color:var(--code-kw); font-weight:600; } .tok-str { color:var(--code-str); }
+.tok-num { color:var(--code-num); } .tok-fn { color:var(--code-fn); } .tok-cm { color:var(--code-cm); font-style:italic; }
+@media print {
+  @page { size:A4; margin:20mm; }
+  body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .card, table, figure, .callout, .toc, .steps li { break-inside:avoid; }
+  h2, h3 { break-after:avoid; }
+}
+
+/* ==== 보고서 레이아웃 ==== */
+.doc { max-width:740px; margin:0 auto; padding:56px 28px 96px; }
+.doc-header { border-bottom:1px solid var(--border); padding-bottom:28px; margin-bottom:8px; }
+.doc-eyebrow { font-size:13px; font-weight:600; color:var(--brand); margin-bottom:8px; }
+.doc-meta { font-size:13px; color:var(--text-3); margin-top:10px; display:flex; gap:16px; flex-wrap:wrap; }
+.doc-summary { font-size:15px; color:var(--text-2); margin-top:14px; }
+figure { margin:20px 0; } figcaption { font-size:13px; color:var(--text-2); margin-top:8px; }
+.doc-footer { margin-top:64px; padding-top:20px; border-top:1px solid var(--border); font-size:13px; color:var(--text-3); }
+</style>
+<style>
+.table-wrap{overflow-x:auto;margin:16px 0}
+.table-wrap table{min-width:640px}
+.diagram{overflow-x:auto;padding:16px;border:1px solid var(--border, #E2E8F0);border-radius:12px;background:var(--bg-soft, #F8FAFC);margin:16px 0}
+.diagram pre.mermaid{margin:0;background:transparent;border:0;padding:0;font-size:13px;white-space:pre}
+.checklist{list-style:none;padding-left:0}
+.checklist li{display:flex;gap:8px;align-items:flex-start}
+.checklist input{margin-top:6px}
+h3{margin-top:28px}
+</style>
+</head>
+<body>
+<div class="doc">
+  <header class="doc-header">
+    <div class="doc-eyebrow">PRD</div>
+    <h1>개인 테크 블로그 실행 계획</h1>
+    <div class="doc-meta"><span>2026-09-21</span><span>작성: 이정현</span><span class="badge">v1.0 · 인터뷰 확정</span></div>
+    <p class="doc-summary"></p>
+  </header>
+  <nav class="toc"><div class="toc-title">목차</div><ol><li><a href="#s1">역할</a></li><li><a href="#s2">일정</a></li><li><a href="#s3">Phase 0 작업 (09-22 ~ 09-28)</a></li><li><a href="#s4">Phase 1 작업 (09-29 ~ 10-19)</a></li><li><a href="#s5">글 한 편의 절차 (2주)</a></li><li><a href="#s6">필자가 정해야 하는 것과 기한</a></li><li><a href="#s7">리스크와 대비</a></li><li><a href="#s8">Phase 2 이후 (요약)</a></li></ol></nav>
+  <p>PRD(docs/PRD.md)를 바탕으로 Phase 0과 Phase 1을 주 단위로 쪼갠 계획이다. 번역은 필자가 직접 영어로 옮긴 뒤 윤문한다. Claude Code는 구축·설정·코드 검증·발행 절차를 맡는다. 시작은 2026-09-22, Phase 1 완료 목표는 2026-10-19다.</p>
+<h2 id="s1">1. 역할</h2>
+<div class="table-wrap"><table><thead><tr><th>영역</th><th>Claude Code</th><th>필자</th></tr></thead><tbody><tr><td>사이트 구축</td><td>AstroPaper 설치, i18n 구조, 상호작용 어댑터, 배포 워크플로우, 폰트·코드블록·OG</td><td>결과 확인, 이름·도메인 결정</td></tr><tr><td>계정</td><td>설정값 안내, 설정 파일 반영</td><td>giscus 앱 설치와 Discussions 켜기, GoatCounter 가입, 도메인 구매와 DNS</td></tr><tr><td>글</td><td>소재 뼈대 제안, 재현 코드 작성·실행 검증, 발행 체크리스트, PR·배포</td><td>한국어 초안, 영어 번역, 윤문, 최종 승인</td></tr><tr><td>운영</td><td>지표 집계, 분기 회고 초안</td><td>리듬 유지, 결정</td></tr></tbody></table></div>
+<h2 id="s2">2. 일정</h2>
+<div class="table-wrap"><table><thead><tr><th>주</th><th>기간</th><th>목표</th><th>완료 조건</th></tr></thead><tbody><tr><td>0</td><td>09-22 ~ 09-28</td><td>Phase 0 개설 준비</td><td>빈 사이트가 juunghyun.github.io에서 열리고, 샘플 글이 한·영 두 주소에서 서로 링크되며, 댓글·조회수 위젯이 로드된다</td></tr><tr><td>1</td><td>09-29 ~ 10-05</td><td>이름·도메인 연결, About, 시리즈·태그, OG 한글</td><td>도메인에서 열림, About 두 언어, 시리즈 이전·다음 링크</td></tr><tr><td>2</td><td>10-06 ~ 10-12</td><td>글 1 발행, 글 2 한국어 초안, 읽기 기준 점검</td><td>글 1 한·영 공개, Lighthouse 90 이상</td></tr><tr><td>3</td><td>10-13 ~ 10-19</td><td>글 2·3 발행, 개설 점검</td><td>글 3편 두 언어, PRD 7절 Phase 1 완료 조건 전부</td></tr></tbody></table></div>
+<p>글 3편을 3주에 내는 것은 격주 1편 리듬보다 빠르다. 구축기(글 1)는 이 작업 기록으로 뼈대를 만들어 필자가 자기 문장으로 고치는 방식으로 시간을 줄인다. 부담되면 글 3을 11-02로 미루고 Phase 1을 2편으로 닫는다.</p>
+<h2 id="s3">3. Phase 0 작업 (09-22 ~ 09-28)</h2>
+<div class="table-wrap"><table><thead><tr><th>순서</th><th>작업</th><th>담당</th><th>내용</th><th>완료 조건</th></tr></thead><tbody><tr><td>0.1</td><td>스캐폴딩</td><td>Claude</td><td>임시 폴더에 <code>npm create astro@latest -- --template satnaing/astro-paper</code> 실행 후 이 레포로 병합, pnpm install, dev 서버 확인</td><td><code>pnpm dev</code>로 샘플 사이트가 뜬다</td></tr><tr><td>0.2</td><td>사이트 설정</td><td>Claude</td><td>astro-paper.config.ts에 site URL, author, lang ko, timezone Asia/Seoul. 샘플 글 삭제. README 병합</td><td><code>pnpm build</code> 통과</td></tr><tr><td>0.3</td><td>GitHub 레포</td><td>Claude, 실행 전 확인</td><td>로컬 폴더를 juunghyun.github.io로 바꾸고 공개 레포 생성·푸시</td><td>github.com/juunghyun/juunghyun.github.io 존재</td></tr><tr><td>0.4</td><td>i18n 구조</td><td>Claude</td><td>astro.config i18n(ko 기본, en은 /en/, prefixDefaultLocale false). 글 컬렉션에 lang·slug. 페이지 라우트를 ko·en 두 벌로. src/i18n/lang/ko.ts 추가. 레이아웃에 hreflang과 언어 전환 링크. sitemap i18n. RSS 언어별</td><td>샘플 글이 /posts/hello/ 와 /en/posts/hello/ 에서 열리고 서로 링크, hreflang 출력</td></tr><tr><td>0.5</td><td>배포</td><td>Claude</td><td>.github/workflows/deploy.yml(withastro/action@v6, actions/deploy-pages@v5), Pages 소스를 Actions로</td><td>https://juunghyun.github.io 에서 열림</td></tr><tr><td>0.6</td><td>계정</td><td>필자</td><td>giscus 앱 설치, Discussions 켜기, 카테고리 Comments(Announcements 형식) 생성 후 giscus.app에서 repo id·category id 복사. GoatCounter 가입(코드 juunghyun 권장), 설정에서 방문자 수 공개 켜기</td><td>id 2개와 GoatCounter 코드 전달</td></tr><tr><td>0.7</td><td>상호작용 어댑터</td><td>Claude</td><td>components/interactions/{Comments,Reactions,ViewCount}.astro와 providers.ts 한 파일에 설정. giscus mapping은 specific term = slug(한·영 공유, 9절 결정 대기). GoatCounter 스크립트는 레이아웃, 카운터는 counter JSON</td><td>로컬에서 댓글 위젯과 조회수 숫자가 뜬다</td></tr></tbody></table></div>
+<h2 id="s4">4. Phase 1 작업 (09-29 ~ 10-19)</h2>
+<div class="table-wrap"><table><thead><tr><th>순서</th><th>작업</th><th>담당</th><th>내용</th><th>완료 조건</th></tr></thead><tbody><tr><td>1.1</td><td>이름·도메인</td><td>필자 결정, Claude 연결</td><td>후보 5개 제안, 선택, 구매, DNS(A 4개와 CNAME www), public/CNAME, HTTPS 강제</td><td>도메인에서 열리고 github.io는 리다이렉트</td></tr><tr><td>1.2</td><td>About·프로젝트</td><td>필자 문장, Claude 페이지</td><td>소속·직군·경력·관심사, 프로젝트 목록, GitHub 프로필 상호 링크. 영어판은 필자 번역</td><td>두 언어 About</td></tr><tr><td>1.3</td><td>시리즈·태그</td><td>Claude</td><td>frontmatter series/seriesOrder, 시리즈 목록과 이전·다음 컴포넌트, 태그 페이지 언어별</td><td>시리즈 글에 이전·다음</td></tr><tr><td>1.4</td><td>읽기 기준</td><td>Claude</td><td>Pretendard 서브셋 웹폰트, 본문 폭 680~720px, keep-all, 코드블록 파일명·줄 강조(Shiki transformers)·복사 버튼, 표 가로 스크롤</td><td>PRD 6절 표 전부</td></tr><tr><td>1.5</td><td>OG 이미지 한글</td><td>Claude</td><td>AstroPaper OG 생성(Satori)에 한글 폰트 등록. 없으면 한글 제목이 깨진다</td><td>한글 제목 OG 정상</td></tr><tr><td>1.6</td><td>글 1: 블로그 구축기</td><td>Claude 뼈대, 필자 문장·번역</td><td>이 작업 기록으로 뼈대를 만들고 필자가 고쳐 쓴다. 번역·윤문, 체크리스트, PR</td><td>10-12 발행</td></tr><tr><td>1.7</td><td>글 2·3: 백엔드 함정</td><td>필자 초안, Claude 코드 검증</td><td>후보: JPA 영속성 컨텍스트 clear로 변경 유실, 보상 트랜잭션 전파 속성, 메트릭 화이트리스트 필터링. 회사 정보 없이 재현 코드로</td><td>10-19 발행</td></tr><tr><td>1.8</td><td>개설 점검</td><td>Claude</td><td>Lighthouse, hreflang·sitemap·RSS 검증, 검색·댓글·조회수 실동작, 모바일</td><td>PRD 7절 Phase 1 완료 조건</td></tr></tbody></table></div>
+<h2 id="s5">5. 글 한 편의 절차 (2주)</h2>
+<div class="table-wrap"><table><thead><tr><th>시점</th><th>필자</th><th>Claude Code</th></tr></thead><tbody><tr><td>1주 초</td><td>소재 확정, 한국어 초안</td><td>소재 뼈대(문제, 원인, 해결, 교훈), 재현 코드 작성·실행</td></tr><tr><td>1주 말</td><td>초안 완성</td><td>코드·수치 대조, AI 도움 문단 윤문</td></tr><tr><td>2주 초</td><td>영어 번역, 윤문</td><td>용어·숫자·링크 대조</td></tr><tr><td>2주 말</td><td>최종 확인</td><td>발행 체크리스트, PR, 배포, LinkedIn 요약문 초안</td></tr></tbody></table></div>
+<h2 id="s6">6. 필자가 정해야 하는 것과 기한</h2>
+<div class="table-wrap"><table><thead><tr><th>항목</th><th>기한</th><th>기본값(미정 시)</th></tr></thead><tbody><tr><td>한·영 댓글 스레드 공유 여부</td><td>09-25</td><td>공유</td></tr><tr><td>giscus·GoatCounter 계정</td><td>09-26</td><td>어댑터를 빈 상태로 두고 진행</td></tr><tr><td>첫 글 3편 소재</td><td>09-28</td><td>4절 1.6·1.7 후보</td></tr><tr><td>블로그 이름·도메인</td><td>10-05</td><td>github.io로 개설, 도메인은 나중에 리다이렉트</td></tr><tr><td>About 경력 문장</td><td>10-05</td><td>프로필 한 줄로 임시</td></tr></tbody></table></div>
+<h2 id="s7">7. 리스크와 대비</h2>
+<div class="table-wrap"><table><thead><tr><th>리스크</th><th>대비</th></tr></thead><tbody><tr><td>AstroPaper는 UI 문구만 i18n이라 콘텐츠 다국어는 직접 구성</td><td>0.4에서 별도 파일로 분리해 테마 업데이트 충돌 최소화</td></tr><tr><td>OG 이미지 한글 깨짐</td><td>1.5에서 한글 폰트 등록, 실패 시 정적 OG 이미지로 대체</td></tr><tr><td>3주 3편 부담</td><td>글 3을 11-02로 미룰 수 있음</td></tr><tr><td>도메인 결정 지연</td><td>github.io로 개설, 도메인은 리다이렉트로 이전</td></tr><tr><td>Actions 배포 실패</td><td>로그 확인, withastro/action 대신 수동 빌드와 upload-pages-artifact</td></tr></tbody></table></div>
+<h2 id="s8">8. Phase 2 이후 (요약)</h2>
+<p>Phase 2(2027-01-31까지): 구독 채널(Substack 등 외부 배포), 관련 글, 이미지 최적화, mermaid·KaTeX, 디자인시스템 적용 여부. Phase 3(2027-03 이후, 조건부): Kotlin/Spring 댓글·반응·조회수 API로 어댑터 교체.</p>
+  <footer class="doc-footer">정본은 Claude Doc(개인 테크 블로그 PRD)이며 이 파일은 docs/PRD.md에서 tools/md2report.py로 생성한 읽기용 사본이다.</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js"></script>
+<script>if(window.mermaid){mermaid.initialize({startOnLoad:true,theme:'neutral',flowchart:{htmlLabels:true}});}</script>
+</body>
+</html>
