@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개인 테크 블로그 PRD</title>
+<style>
+/* ==== tokens (원본: ../tokens.css — 색·컴포넌트 수정은 원본에서) ==== */
+:root {
+  --blue-50:#EFF6FF; --blue-100:#DBEAFE; --blue-300:#93C5FD; --blue-500:#3B82F6;
+  --blue-600:#2563EB; --blue-700:#1D4ED8; --blue-800:#1E40AF;
+  --slate-50:#F8FAFC; --slate-100:#F1F5F9; --slate-200:#E2E8F0; --slate-300:#CBD5E1;
+  --slate-400:#94A3B8; --slate-500:#64748B; --slate-600:#475569; --slate-900:#0F172A;
+  --success:#059669; --success-bg:#ECFDF5; --warning:#B45309; --warning-bg:#FFFBEB;
+  --danger:#DC2626; --danger-bg:#FEF2F2;
+  --brand:var(--blue-600); --brand-soft:var(--blue-50);
+  --text:var(--slate-900); --text-2:var(--slate-600); --text-3:var(--slate-400);
+  --bg:#FFFFFF; --bg-soft:var(--slate-50); --border:var(--slate-200);
+  --font-sans:"Wanted Sans Variable","Wanted Sans",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius-sm:8px; --radius:12px; --radius-lg:16px;
+  --shadow-sm:0 1px 2px rgb(15 23 42 / .05);
+  --chart-hero:var(--blue-600);
+  --code-kw:#1D4ED8; --code-str:#059669; --code-num:#B45309; --code-fn:#7C3AED; --code-cm:#94A3B8;
+}
+* { box-sizing:border-box; }
+body { font-family:var(--font-sans); color:var(--text); background:var(--bg); line-height:1.7; word-break:keep-all; -webkit-font-smoothing:antialiased; margin:0; font-size:15px; }
+h1,h2,h3 { line-height:1.3; letter-spacing:-0.01em; font-weight:700; margin:0 0 .5em; }
+h1 { font-size:28px; } h2 { font-size:22px; margin-top:2.2em; } h3 { font-size:17px; margin-top:1.6em; }
+p { margin:0 0 1em; } a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
+ul, ol { padding-left:22px; margin:0 0 1em; } li { margin-bottom:4px; }
+code { font-family:var(--font-mono); font-size:.88em; background:var(--slate-100); border-radius:6px; padding:.15em .4em; }
+pre { font-family:var(--font-mono); font-size:13px; background:var(--slate-100); border-radius:var(--radius-sm); padding:14px 16px; overflow-x:auto; line-height:1.6; }
+pre code { background:none; padding:0; }
+.num, td.num { font-variant-numeric:tabular-nums; }
+.card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); padding:20px 24px; }
+.badge { display:inline-block; font-size:12px; font-weight:600; padding:2px 10px; border-radius:999px; background:var(--brand-soft); color:var(--blue-700); }
+.badge.ok { background:var(--success-bg); color:var(--success); }
+.badge.warn { background:var(--warning-bg); color:var(--warning); }
+.badge.danger { background:var(--danger-bg); color:var(--danger); }
+table { border-collapse:collapse; width:100%; font-size:14px; margin:0 0 1em; }
+th,td { padding:9px 14px; border-bottom:1px solid var(--border); text-align:left; }
+th { background:var(--bg-soft); font-weight:600; font-size:13px; color:var(--text-2); }
+td.num, th.num { text-align:right; }
+.callout { border:1px solid var(--border); border-left:3px solid var(--brand); background:var(--brand-soft); border-radius:var(--radius-sm); padding:14px 18px; font-size:14px; margin:16px 0; }
+.callout.warn { border-left-color:var(--warning); background:var(--warning-bg); }
+.callout.danger { border-left-color:var(--danger); background:var(--danger-bg); }
+.callout.neutral { border-left-color:var(--slate-400); background:var(--bg-soft); }
+.callout-title { font-weight:700; font-size:13px; margin-bottom:4px; }
+.callout p:last-child { margin-bottom:0; }
+blockquote { margin:16px 0; padding:4px 20px; border-left:3px solid var(--blue-300); color:var(--text-2); }
+.toc { background:var(--bg-soft); border:1px solid var(--border); border-radius:var(--radius); padding:18px 26px; font-size:14px; margin:24px 0; }
+.toc-title { font-size:12px; font-weight:700; color:var(--text-2); letter-spacing:.08em; margin-bottom:8px; }
+.toc ol { margin:0; padding-left:20px; line-height:2; }
+.toc a { color:var(--text); } .toc a:hover { color:var(--brand); }
+.steps { list-style:none; margin:16px 0; padding:0; }
+.steps li { position:relative; padding:0 0 20px 28px; }
+.steps li::before { content:""; position:absolute; left:0; top:7px; width:10px; height:10px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+.steps li::after { content:""; position:absolute; left:4px; top:22px; bottom:4px; width:2px; background:var(--border); }
+.steps li:last-child { padding-bottom:0; } .steps li:last-child::after { display:none; }
+.step-title { font-weight:600; } .step-meta { font-size:13px; color:var(--text-3); }
+.tok-kw { color:var(--code-kw); font-weight:600; } .tok-str { color:var(--code-str); }
+.tok-num { color:var(--code-num); } .tok-fn { color:var(--code-fn); } .tok-cm { color:var(--code-cm); font-style:italic; }
+@media print {
+  @page { size:A4; margin:20mm; }
+  body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .card, table, figure, .callout, .toc, .steps li { break-inside:avoid; }
+  h2, h3 { break-after:avoid; }
+}
+
+/* ==== 보고서 레이아웃 ==== */
+.doc { max-width:740px; margin:0 auto; padding:56px 28px 96px; }
+.doc-header { border-bottom:1px solid var(--border); padding-bottom:28px; margin-bottom:8px; }
+.doc-eyebrow { font-size:13px; font-weight:600; color:var(--brand); margin-bottom:8px; }
+.doc-meta { font-size:13px; color:var(--text-3); margin-top:10px; display:flex; gap:16px; flex-wrap:wrap; }
+.doc-summary { font-size:15px; color:var(--text-2); margin-top:14px; }
+figure { margin:20px 0; } figcaption { font-size:13px; color:var(--text-2); margin-top:8px; }
+.doc-footer { margin-top:64px; padding-top:20px; border-top:1px solid var(--border); font-size:13px; color:var(--text-3); }
+</style>
+<style>
+.table-wrap{overflow-x:auto;margin:16px 0}
+.table-wrap table{min-width:640px}
+.diagram{overflow-x:auto;padding:16px;border:1px solid var(--border, #E2E8F0);border-radius:12px;background:var(--bg-soft, #F8FAFC);margin:16px 0}
+.diagram pre.mermaid{margin:0;background:transparent;border:0;padding:0;font-size:13px;white-space:pre}
+.checklist{list-style:none;padding-left:0}
+.checklist li{display:flex;gap:8px;align-items:flex-start}
+.checklist input{margin-top:6px}
+h3{margin-top:28px}
+</style>
+</head>
+<body>
+<div class="doc">
+  <header class="doc-header">
+    <div class="doc-eyebrow">PRD</div>
+    <h1>개인 테크 블로그 PRD</h1>
+    <div class="doc-meta"><span>2026-09-21</span><span>작성: 이정현</span><span class="badge">v1.0 · 인터뷰 확정</span></div>
+    <p class="doc-summary">이 블로그는 백엔드 개발자가 일하며 얻은 인사이트와 문제 해결 과정을 자기 언어로 기록하고 공유하는 곳이다. GitHub 계정 아래에 두고, 블로그 자체도 계속 발전시키는 프로젝트로 다룬다.</p>
+  </header>
+  <nav class="toc"><div class="toc-title">목차</div><ol><li><a href="#s1">목적과 성공 기준</a></li><li><a href="#s2">필자와 독자</a></li><li><a href="#s3">콘텐츠 전략</a></li><li><a href="#s4">기능 요구사항</a></li><li><a href="#s5">아키텍처와 기술 선택</a></li><li><a href="#s6">디자인 원칙</a></li><li><a href="#s7">발전 로드맵</a></li><li><a href="#s8">측정 지표</a></li><li><a href="#s9">열린 결정과 리스크</a></li><li><a href="#s10">인터뷰 기록</a></li></ol></nav>
+  <h2 id="s1">1. 목적과 성공 기준</h2>
+<p>이 블로그는 백엔드 개발자가 일하며 얻은 인사이트와 문제 해결 과정을 자기 언어로 기록하고 공유하는 곳이다. GitHub 계정 아래에 두고, 블로그 자체도 계속 발전시키는 프로젝트로 다룬다.</p>
+<p><strong>세 가지 목적</strong></p>
+<ul>
+<li>기록: 해결한 문제와 그 과정을 남겨 미래의 내가 다시 찾게 한다.</li>
+<li>정리: 남에게 설명할 수 있을 만큼 정리하는 과정에서 이해가 깊어진다. 글쓰기 자체가 인사이트를 만든다.</li>
+<li>공유: 같은 문제를 검색으로 만난 개발자가 답을 얻고, 댓글과 반응으로 대화가 생긴다.</li>
+</ul>
+<p><strong>하지 않는 것</strong></p>
+<ul>
+<li>회사 내부 정보, 고객 데이터, 미공개 제품 사양은 다루지 않는다. 일반화한 패턴만 쓴다.</li>
+<li>뉴스 큐레이션이나 남의 튜토리얼 번역은 하지 않는다. 직접 겪고 확인한 것만 쓴다.</li>
+<li>광고 수익화는 목표가 아니다.</li>
+</ul>
+<p><strong>성공 기준</strong>: 1년 뒤(2027-09) 꾸준히 발행되고 있고, 검색으로 들어온 독자가 댓글이나 반응을 남기고, 블로그 코드가 한 번 이상 구조적으로 발전해 있으면 성공이다. 수치 기준은 8절 측정 지표에 둔다.</p>
+<h2 id="s2">2. 필자와 독자</h2>
+<p>필자는 Kotlin/Spring 백엔드 개발자다. 건설 현장 계측·안전 모니터링 SaaS의 메인 백엔드를 맡아 MySQL·MongoDB·Redis·Kafka·AWS Batch 위에서 도메인 로직, 배치, 이벤트 파이프라인, 보고서 생성을 다룬다. AI 코딩 도구를 워크플로우에 깊게 넣어 쓰고, 코드 리뷰와 실패 패턴을 체계화하는 데 관심이 많다. GitHub 핸들은 juunghyun이다.</p>
+<p>글은 한국어와 영어로 함께 발행한다(인터뷰 1라운드 결정). 그래서 독자는 국내에 한정되지 않는다.</p>
+<div class="table-wrap"><table><thead><tr><th>독자</th><th>찾아오는 상황</th><th>원하는 것</th><th>블로그가 줄 것</th></tr></thead><tbody><tr><td>검색으로 온 백엔드 개발자</td><td>같은 에러나 설계 고민을 검색</td><td>원인·해결·재현 조건</td><td>문제→원인→해결→교훈 구조, 복사 가능한 코드, 검증 방법</td></tr><tr><td>영어권 개발자</td><td>같은 검색을 영어로</td><td>위와 같음</td><td>한 글에 대응하는 영어판, 언어 전환 링크</td></tr><tr><td>동료·지인</td><td>링크로 공유받음</td><td>맥락 있는 설명</td><td>시리즈 묶음, 배경 글 링크</td></tr><tr><td>채용 담당자·미래 동료</td><td>프로필에서 링크를 타고 옴</td><td>어떤 문제를 어떻게 푸는 사람인지</td><td>About 페이지, 대표 글 고정, 프로젝트 목록</td></tr><tr><td>미래의 나</td><td>같은 문제를 다시 만남</td><td>그때의 결정과 이유</td><td>검색, 태그, 날짜와 버전 명시</td></tr></tbody></table></div>
+<p>독자 대부분은 검색으로 글 한 편에 바로 착지한다. 그래서 메인 페이지보다 글 페이지 한 장이 혼자 설 수 있어야 한다.</p>
+<h3>2.1 참고 사례에서 본 공통점</h3>
+<p>국내 9명, 해외 8명의 개발자 블로그 17건을 2026-09-21에 비교했다. 다섯 가지 공통점이 PRD 결정에 반영됐다.</p>
+<div class="table-wrap"><table><thead><tr><th>공통점</th><th>근거</th><th>반영</th></tr></thead><tbody><tr><td>원문은 자기가 소유한 곳에 둔다</td><td>명시된 12건이 정적 생성기(Jekyll 2, Hugo 1, Gatsby 2) 또는 GitHub Pages·Cloudflare Pages. 상용 플랫폼만 쓰는 경우는 Tistory 2, LinkedIn 1</td><td>5절 Astro + GitHub Pages 그대로</td></tr><tr><td>개인 도메인이 표준이다</td><td>해외 8명 중 7명, 국내 9명 중 3명. Substack을 써도 자기 도메인을 붙인다</td><td>도메인 결정을 Phase 1로 당김 (4절, 7절, 9절)</td></tr><tr><td>구독 채널을 둔다</td><td>해외 8명 중 6명이 이메일 구독·뉴스레터·RSS 운영. 국내 사례엔 언급 없음</td><td>구독을 Should로 올림 (4절)</td></tr><tr><td>프로필 허브에서 소속·경력·블로그를 잇는다</td><td>8명이 GitHub 프로필이나 About에 회사·직군을 적고 블로그를 링크</td><td>About 페이지에 소속·경력 명시 (4절)</td></tr><tr><td>주제는 본업 × AI</td><td>17명 중 10명이 AI 에이전트·LLM·MCP 글을 본업 위에 얹음</td><td>3.1 도구·워크플로우 유형 유지, 비중은 실측 후 조정</td></tr></tbody></table></div>
+<p>원문과 배포를 나누는 패턴(Hugo 원문 + Substack 배포, Medium·Hashnode·DEV.to 병행)도 흔해 3.3에 배포 단계를 넣었다. 블로그 제작 후기와 플랫폼 이전 회고가 글감이 되는 사례(Hudi, Lalit Maganti)도 있어 첫 글 후보로 삼는다. 댓글·반응을 언급한 사례는 없었다. 독자 관계는 구독으로 유지하는 쪽이 일반적이며, giscus는 비용이 거의 없으므로 Must를 유지한다.</p>
+<h2 id="s3">3. 콘텐츠 전략</h2>
+<p>격주 1편, 한국어와 영어 두 벌을 같은 날 발행한다. 글은 네 유형 중 하나이고, 대부분은 문제 해결 기록이다. 리듬은 8절 지표의 분모이며 분기마다 실측을 보고 조정한다.</p>
+<h3>3.1 글 유형</h3>
+<div class="table-wrap"><table><thead><tr><th>유형</th><th>구조</th><th>비중</th><th>예시 소재</th></tr></thead><tbody><tr><td>문제 해결 기록</td><td>증상, 재현 조건, 원인, 해결, 교훈</td><td>60%</td><td>JPA 영속성 컨텍스트가 비워져 변경이 유실된 사례, 보상 트랜잭션의 전파 속성 선택, 메트릭이 조용히 필터링된 사례</td></tr><tr><td>설계 결정</td><td>선택지, 얻는 것과 잃는 것, 결정, 결과</td><td>20%</td><td>배치와 이벤트 중 무엇으로 보고서를 만들지, 카운터를 어디에 둘지</td></tr><tr><td>실측·실험</td><td>질문, 방법, 수치, 해석</td><td>10%</td><td>LLM 단가 비교, PR 리뷰 지적 유형 분석</td></tr><tr><td>도구·워크플로우</td><td>문제, 도구, 설정, 효과</td><td>10%</td><td>AI 코딩 도구를 리뷰 절차에 넣은 방법</td></tr></tbody></table></div>
+<h3>3.2 분류와 글 메타데이터</h3>
+<p>카테고리는 글 유형 4개다. 태그는 기술 이름이고(Kotlin, Spring, JPA, Kafka, MySQL, MongoDB, Redis, AWS, Claude Code), 시리즈는 순서 있는 연재 묶음이다. 한국어와 영어 글은 같은 슬러그를 쓴다.</p>
+<pre><code>title: 영속성 컨텍스트가 비워지면 변경이 사라진다
+description: 한 두 문장 요약. 검색 결과와 OG에 쓰인다
+pubDatetime: 2026-10-05
+modDatetime: 2026-10-05
+lang: ko
+slug: jpa-clear-automatically-lost-update
+type: troubleshooting
+tags: [Kotlin, Spring, JPA]
+series: jpa-pitfalls
+seriesOrder: 1
+draft: false</code></pre>
+<h3>3.3 글쓰기 워크플로우 (2주 사이클)</h3>
+<div class="diagram"><pre class="mermaid">flowchart LR
+  A[소재 백로그&lt;br/&gt;GitHub Issue] --&gt; B[한국어 초안&lt;br/&gt;코드 실행 확인]
+  B --&gt; C[윤문&lt;br/&gt;AI 티 제거]
+  C --&gt; D[영어 번역&lt;br/&gt;초벌 + 본인 검수]
+  D --&gt; E[발행 체크리스트]
+  E --&gt; F[PR 머지&lt;br/&gt;동시 발행]
+  F --&gt; G[배포&lt;br/&gt;LinkedIn 요약 + 원문 링크]</pre></div>
+<p>소재는 일하다 마주친 문제를 그날 이슈로 남기는 데서 시작한다. 번역은 Claude Code로 초벌을 만들고, 코드·수치·고유명사를 대조한 뒤 본인이 끝까지 읽고 고친다.</p>
+<div class="table-wrap"><table><thead><tr><th>주차</th><th>할 일</th><th>산출물</th></tr></thead><tbody><tr><td>1주</td><td>소재 고르기, 한국어 초안, 코드 실행 확인</td><td>한국어 초안, 검증된 코드</td></tr><tr><td>2주</td><td>윤문, 영어 번역과 검수, OG 확인, PR</td><td>영어판, PR 머지, 동시 발행</td></tr><tr><td>발행 직후</td><td>LinkedIn에 요약과 원문 링크, 구독 채널 발송</td><td>배포 글 1건, 구독 발송 1회</td></tr></tbody></table></div>
+<p>발행 전 체크리스트</p>
+<ul class="checklist">
+<li><input type="checkbox" disabled > 회사 내부 정보, 고객명, 내부 URL이 없다. 코드는 재작성본이다.</li>
+<li><input type="checkbox" disabled > 코드를 실행해 확인했고 언어·프레임워크 버전을 적었다.</li>
+<li><input type="checkbox" disabled > 제목에 독자가 검색할 단어가 들어 있다.</li>
+<li><input type="checkbox" disabled > 한·영 슬러그가 같고 서로 링크된다.</li>
+<li><input type="checkbox" disabled > description이 한두 문장이고 OG 이미지를 확인했다.</li>
+</ul>
+<h2 id="s4">4. 기능 요구사항</h2>
+<p>Phase 1은 Must 전부를 갖추고 연다. 우선순위는 MoSCoW(Must, Should, Could, Won't)다. Phase 1 필수 기능 네 개(조회수·검색·시리즈·About)는 인터뷰 2라운드에서 정했다.</p>
+<div class="table-wrap"><table><thead><tr><th>기능</th><th>우선순위</th><th>Phase</th><th>구현 수단</th><th>완료 기준</th></tr></thead><tbody><tr><td>글 목록, 글 페이지, 페이지네이션</td><td>Must</td><td>1</td><td>AstroPaper 기본</td><td>글 3편이 목록과 상세에 보인다</td></tr><tr><td>마크다운·MDX, 코드 하이라이트</td><td>Must</td><td>1</td><td>Astro 내장 Shiki, 줄 강조·파일명</td><td>Kotlin·SQL·YAML 하이라이트, 가로 스크롤</td></tr><tr><td>목차</td><td>Must</td><td>1</td><td>AstroPaper 접이식 목차</td><td>h2·h3 자동 생성</td></tr><tr><td>한/영 전환, hreflang</td><td>Must</td><td>1</td><td>Astro i18n + 레이아웃 link 태그 + sitemap i18n</td><td>두 언어 페이지가 서로 가리킨다</td></tr><tr><td>댓글</td><td>Must</td><td>1</td><td>giscus</td><td>GitHub 로그인 후 댓글, 다크모드 연동</td></tr><tr><td>반응</td><td>Must</td><td>1</td><td>giscus 반응</td><td>글 하단에 반응 수 표시</td></tr><tr><td>글별 공개 조회수</td><td>Must</td><td>1</td><td>GoatCounter counter JSON</td><td>글 상단 숫자, 4시간 지연 허용</td></tr><tr><td>방문자 분석</td><td>Must</td><td>1</td><td>GoatCounter 대시보드</td><td>유입 경로·페이지별 집계</td></tr><tr><td>사이트 내 검색</td><td>Must</td><td>1</td><td>Pagefind (AstroPaper 내장)</td><td>한글 검색어로 결과가 나온다</td></tr><tr><td>태그, 시리즈</td><td>Must</td><td>1</td><td>태그는 테마, 시리즈는 프런트매터 + 목록 컴포넌트</td><td>시리즈 글에 이전·다음 링크</td></tr><tr><td>About, 프로젝트</td><td>Must</td><td>1</td><td>정적 페이지 2개</td><td>소속·직군·경력, 관심사, 프로젝트 목록, GitHub 프로필과 상호 링크</td></tr><tr><td>RSS, sitemap, OG 이미지</td><td>Must</td><td>1</td><td>AstroPaper 내장, RSS는 언어별</td><td>언어별 피드, 글마다 OG 이미지</td></tr><tr><td>다크모드</td><td>Must</td><td>1</td><td>테마 내장</td><td>시스템 설정 따라감 + 토글</td></tr><tr><td>관련 글, 이전·다음 글</td><td>Should</td><td>2</td><td>태그 겹침 기반</td><td>글 하단 3편</td></tr><tr><td>커스텀 도메인</td><td>Should</td><td>1</td><td>이름 결정 후 CNAME + DNS, 연 1~2만원</td><td>개설 시점에 연결, github.io 주소는 리다이렉트</td></tr><tr><td>이미지 최적화, 캐션</td><td>Should</td><td>2</td><td>Astro Image</td><td>webp, 지연 로딩</td></tr><tr><td>다이어그램, 수식</td><td>Should</td><td>2</td><td>mermaid 빌드 렌더, KaTeX</td><td>빌드 시 SVG</td></tr><tr><td>글 수정 이력 링크</td><td>Should</td><td>2</td><td>GitHub history 링크</td><td>글 하단</td></tr><tr><td>구독 (RSS 안내 + 이메일)</td><td>Should</td><td>2</td><td>글 하단 RSS 링크, 이메일은 Substack 등 외부 서비스로 원문 링크만 배포</td><td>구독 링크 노출, 첫 발송 1회</td></tr><tr><td>직접 만든 댓글·반응·조회수 서비스</td><td>Could</td><td>3</td><td>Kotlin/Spring API, 어댑터 교체</td><td>글·레이아웃 변경 없이 교체</td></tr><tr><td>로그인 없는 좋아요</td><td>Could</td><td>3</td><td>자체 API</td><td></td></tr><tr><td>광고, 자체 회원가입, CMS, 결제</td><td>Won't</td><td></td><td></td><td></td></tr></tbody></table></div>
+<h2 id="s5">5. 아키텍처와 기술 선택</h2>
+<p>Astro로 만든 정적 사이트를 GitHub 레포에서 빌드해 배포하고, 댓글·반응·조회수는 교체 가능한 어댑터 뒤에 둔다. 호스팅은 3안을 비교해 GitHub Pages로 정했다.</p>
+<h3>5.1 확정된 선택</h3>
+<div class="table-wrap"><table><thead><tr><th>항목</th><th>결정</th><th>이유</th></tr></thead><tbody><tr><td>구축 방식</td><td>하이브리드</td><td>글쓰기를 먼저 시작하고, 상호작용 기능은 나중에 직접 만든 서비스로 갈아끼운다</td></tr><tr><td>프레임워크</td><td>Astro</td><td>마크다운 중심, 브라우저 JS 최소, 프론트 지식 부담이 가장 작다</td></tr><tr><td>다국어</td><td>Astro 내장 i18n, 한국어 <code>/</code>, 영어 <code>/en/</code></td><td><code>prefixDefaultLocale: false</code>면 한국어 URL이 짧다. hreflang은 자동 생성되지 않으므로 레이아웃에서 직접 넣는다 (<a href="https://docs.astro.build/en/guides/internationalization/" target="_blank" rel="noopener">Astro i18n 문서</a>)</td></tr><tr><td>레포</td><td>공개 레포 1개, 이름 <code>juunghyun.github.io</code></td><td>giscus가 공개 레포를 요구한다. 무료 계정의 GitHub Pages 조건과도 맞는다</td></tr></tbody></table></div>
+<h3>5.2 호스팅 3안 비교</h3>
+<p>각 공식 문서를 2026-09-21에 열어 확인한 수치다.</p>
+<div class="table-wrap"><table><thead><tr><th>항목</th><th>GitHub Pages</th><th>Vercel Hobby</th><th>Cloudflare (Pages / Workers 정적 에셋)</th></tr></thead><tbody><tr><td>비용</td><td>무료</td><td>무료, 비상업 용도만</td><td>무료</td></tr><tr><td>월 대역폭</td><td>100 GB (soft)</td><td>100 GB</td><td>정적 에셋 요청 무료, 상한 없음</td></tr><tr><td>사이트 크기</td><td>1 GB</td><td>CLI 업로드 100 MB</td><td>파일 20,000개, 파일당 25 MiB</td></tr><tr><td>빌드</td><td>GitHub Actions, 배포 10분 제한</td><td>하루 100회, 빌드 45분</td><td>월 500회, 동시 1개, 20분</td></tr><tr><td>서버 기능</td><td>없음</td><td>Functions 월 100만 호출</td><td>Workers 하루 10만 요청, CPU 10 ms</td></tr><tr><td>커스텀 헤더·리다이렉트</td><td>없음 (meta refresh만)</td><td>vercel.json</td><td><code>_headers</code>, <code>_redirects</code></td></tr><tr><td>PR 미리보기</td><td>직접 구성</td><td>기본 제공</td><td>기본 제공, 개수 무제한</td></tr><tr><td>내장 분석</td><td>없음</td><td>Web Analytics 월 5만 이벤트, 1개월 보관</td><td>별도 도구 (4절)</td></tr><tr><td>추가 계정</td><td>없음</td><td>Vercel</td><td>Cloudflare</td></tr><tr><td>이용 규정</td><td>온라인 비즈니스·SaaS 금지, 블로그는 허용</td><td>광고 포함 시 상업 이용으로 간주</td><td>Workers가 Pages렴다 기능이 넓다고 안내 (Cron, 관측성)</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>선택지</th><th>얻는 것</th><th>잃는 것</th><th>완화책</th></tr></thead><tbody><tr><td>GitHub Pages</td><td>레포·Actions·Discussions(댓글)·호스팅이 한 계정에 모인다. 설정이 가장 적다. "내 GitHub 계정에 단다"는 의도와 정확히 맞는다</td><td>서버 기능·커스텀 헤더·PR 미리보기가 없다. 대역폭 100 GB soft</td><td>Astro 산출물은 순수 정적이라 이전 비용이 한두 시간이다. 미리보기는 Actions 아티팩트로 대신한다. 헤더는 필요해지는 시점에 CDN을 앞에 둔다</td></tr><tr><td>Cloudflare</td><td>대역폭 무제한, <code>_headers</code>, 브랜치 미리보기. Workers·D1로 조회수 카운터 같은 작은 서버 기능을 Phase 2에 바로 붙일 수 있다</td><td>계정이 하나 늘고, Pages에서 Workers로 옮겨가는 흐름이라 설정 방식이 바뀜 수 있다. Workers로 만든 기능은 Phase 3 Kotlin 백엔드와 중복 투자가 된다</td><td>처음부터 Workers 정적 에셋으로 시작한다. 서버 기능은 어댑터 뒤에 둬 Phase 3에서 버릴 수 있게 한다</td></tr><tr><td>Vercel</td><td>개발 경험이 가장 매끄럽다. PR 미리보기와 Web Analytics가 내장된다</td><td>Hobby는 비상업 전용이라 광고를 넣으면 위반이고, 한도 초과 시 유료 전환 외에 길이 없다. 계정이 하나 늘고, 정적 블로그엔 장점 대부분이 쓰이지 않는다</td><td>광고를 넣지 않는다는 1절 원칙을 유지한다. 한도는 블로그 규모에서 도달하기 어렵다</td></tr></tbody></table></div>
+<p><strong>권고: GitHub Pages.</strong> 하이브리드 전략은 서버 기능을 호스팅에 붙이지 않고 Phase 3의 별도 백엔드로 두는 것이라, 호스팅의 서버 기능은 쓸 일이 적다. 레포·댓글·배포가 한 계정에 모이는 단순함이 1년 유지에 더 중요하다. 브랜치 미리보기가 꾸 필요해지면 그때 Cloudflare로 옮긴다. 결정: GitHub Pages (2026-09-21 인터뷰 2라운드에서 확정).</p>
+<h3>5.3 상호작용 어댑터</h3>
+<p>글 본문은 어떤 제공자를 쓰는지 모른다. 글의 슬러그가 유일한 키이고, 기능마다 컴포넌트 하나가 제공자를 감싼다. Phase 3에서 제공자를 바꿔도 글과 레이아웃은 그대로다.</p>
+<div class="table-wrap"><table><thead><tr><th>기능</th><th>Phase 1 제공자</th><th>Phase 3 교체 대상</th><th>어댑터 경계</th></tr></thead><tbody><tr><td>댓글</td><td>giscus (GitHub Discussions, 로그인은 GitHub)</td><td>직접 만든 댓글 API</td><td><code>Comments</code> 컴포넌트 하나</td></tr><tr><td>반응</td><td>giscus 반응 (GitHub 반응 8종)</td><td>직접 만든 반응 API</td><td><code>Reactions</code> 컴포넌트 하나</td></tr><tr><td>글별 조회수</td><td>GoatCounter counter JSON. 4시간 캐시, 설정에서 공개를 켜야 함</td><td>직접 만든 카운터</td><td><code>ViewCount</code> 컴포넌트 + fetch 함수 하나</td></tr><tr><td>방문자 분석</td><td>GoatCounter 또는 Umami Cloud 무료 플랜 (4절에서 비교)</td><td>유지</td><td>레이아웃의 script 한 줄</td></tr></tbody></table></div>
+<p>giscus는 페이지와 Discussion을 이어주는 키를 고를 수 있다. 한국어와 영어 페이지가 같은 슬러그를 키로 쓰면 댓글 스레드 하나를 공유하고, URL을 키로 쓰면 언어별로 나뉜다. 이 선택은 9절 열린 결정에 둔다.</p>
+<h3>5.4 배포 흐름</h3>
+<div class="diagram"><pre class="mermaid">flowchart LR
+  A[로컬 마크다운&lt;br/&gt;ko + en] --&gt; B[PR, main 머지]
+  B --&gt; C[GitHub Actions&lt;br/&gt;withastro/action]
+  C --&gt; D[GitHub Pages&lt;br/&gt;juunghyun.github.io]
+  D --&gt; E[giscus, GoatCounter&lt;br/&gt;브라우저가 직접 호출]</pre></div>
+<p>글은 PR로 올리고, 머지되면 Actions가 빌드해 배포한다. 상호작용은 브라우저가 외부 서비스를 직접 부른다. 사용자 사이트는 <code>site</code>만 설정하고 <code>base</code>는 비운다 (<a href="https://docs.astro.build/en/guides/deploy/github/" target="_blank" rel="noopener">Astro GitHub Pages 배포 문서</a>).</p>
+<p><strong>출처 (2026-09-21 열람)</strong></p>
+<ul>
+<li><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits" target="_blank" rel="noopener">GitHub Pages 제한</a></li>
+<li><a href="https://vercel.com/docs/limits" target="_blank" rel="noopener">Vercel 한도</a>, <a href="https://vercel.com/docs/limits/fair-use-guidelines" target="_blank" rel="noopener">Vercel 공정 이용 지침</a>, <a href="https://vercel.com/docs/analytics/limits-and-pricing" target="_blank" rel="noopener">Vercel Web Analytics 요금</a></li>
+<li><a href="https://developers.cloudflare.com/pages/platform/limits/" target="_blank" rel="noopener">Cloudflare Pages 제한</a>, <a href="https://developers.cloudflare.com/workers/platform/limits/" target="_blank" rel="noopener">Workers 제한</a>, <a href="https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/" target="_blank" rel="noopener">Pages에서 Workers로 이전 안내</a></li>
+<li><a href="https://github.com/giscus/giscus" target="_blank" rel="noopener">giscus</a>, <a href="https://www.goatcounter.com/help/visitor-counter" target="_blank" rel="noopener">GoatCounter 방문자 카운터</a></li>
+</ul>
+<h2 id="s6">6. 디자인 원칙</h2>
+<p>Phase 1은 AstroPaper 기본 디자인을 그대로 쓴다(인터뷰 2라운드 결정). 손대는 것은 한글 폰트 폴백과 본문 폭뿐이다. 개인 디자인시스템(코발트 블루, Wanted Sans) 적용은 Phase 2 열린 결정이다.</p>
+<p><a href="https://github.com/satnaing/astro-paper" target="_blank" rel="noopener">AstroPaper</a>가 이미 갖춘 것: 라이트·다크 모드, Pagefind 검색, OG 이미지 자동 생성, RSS, sitemap, 접이식 목차, 접근성, 반응형, MDX, 초안·페이지네이션. README에 i18n ready로 표기되어 있으나 콘텐츠 다국어 구조는 Phase 0에서 직접 확인한다. 라이선스 MIT.</p>
+<p>테마 위에서 확인할 읽기 기준</p>
+<div class="table-wrap"><table><thead><tr><th>항목</th><th>기준</th></tr></thead><tbody><tr><td>본문 폭</td><td>한 줄 한글 35\~45자, 대략 max-width 680\~720px</td></tr><tr><td>본문 글자</td><td>16\~17px, 줄 간격 1.7, <code>word-break: keep-all</code></td></tr><tr><td>한글 폰트</td><td>테마 기본 스택 앞에 Pretendard 가변 웹폰트(서브셋) 추가</td></tr><tr><td>헤딩</td><td>h2·h3만 쓴다. h4 이하 금지</td></tr><tr><td>코드블록</td><td>파일명 캐션, 줄 강조, 가로 스크롤, 복사 버튼</td></tr><tr><td>표·이미지</td><td>자체 가로 스크롤, 이미지 캐션과 alt 필수</td></tr><tr><td>다크모드</td><td>시스템 설정을 따르고 토글로 고정, giscus 테마 연동</td></tr><tr><td>모바일</td><td>좌우 여백 16px, 가로 스크롤 없음</td></tr><tr><td>성능·접근성</td><td>Lighthouse 성능·접근성 90 이상</td></tr></tbody></table></div>
+<p>테마 커스텀은 별도 레이아웃·컴포넌트 파일에 모아 테마 업데이트와 충돌하지 않게 한다.</p>
+<h2 id="s7">7. 발전 로드맵</h2>
+<p>네 단계로 간다. Phase 0과 1은 날짜를 박고, Phase 3은 조건이 찼을 때만 들어간다.</p>
+<div class="table-wrap"><table><thead><tr><th>Phase</th><th>목표일</th><th>범위</th><th>완료 조건</th></tr></thead><tbody><tr><td>0 개설 준비</td><td>2026-09-28</td><td>레포 <code>juunghyun.github.io</code> 생성, AstroPaper 설치, i18n 구조(한국어 <code>/</code>, 영어 <code>/en/</code>) 확인, Actions 배포, giscus·GoatCounter 계정</td><td>빈 사이트가 주소에서 열리고 PR 머지로 자동 배포된다</td></tr><tr><td>1 개설</td><td>2026-10-19</td><td>4절 Must 전부, 블로그 이름·도메인 결정과 연결, 첫 글 3편 한·영(구축기 포함)</td><td>글 3편 두 언어, 댓글·반응·조회수·검색 동작, 도메인에서 열림, Lighthouse 90 이상</td></tr><tr><td>2 성장</td><td>2027-01-31</td><td>Should 기능, 구독 채널 개설, 디자인시스템 결정, 글 10편 이상</td><td>검색 유입 첫 발생, 외부인 댓글 첫 발생, 구독자 첫 발생</td></tr><tr><td>3 직접 서비스화</td><td>2027-03-01 이후, 조건부</td><td>Kotlin/Spring으로 댓글·반응·조회수 API, 어댑터 교체, Discussions 데이터 이전</td><td>제공자 교체 후 글·레이아웃 변경 0, 기존 댓글 보존</td></tr></tbody></table></div>
+<p>Phase 3 진입 조건: 월 고유 방문 1,000 이상이거나, 직접 만드는 것 자체가 글 소재가 될 만큼 학습 목적이 분명할 때. 조건이 안 차면 giscus를 유지한다.</p>
+<h2 id="s8">8. 측정 지표</h2>
+<p>목표치는 제안값이다. 첫 분기(2026-12) 실측을 보고 조정한다.</p>
+<div class="table-wrap"><table><thead><tr><th>지표</th><th>2027-09 목표</th><th>확인 주기</th><th>출처</th></tr></thead><tbody><tr><td>발행 편수</td><td>26편 (격주 1편)</td><td>월</td><td>레포</td></tr><tr><td>리듬 준수율</td><td>80% 이상</td><td>분기</td><td>발행일 대비</td></tr><tr><td>월 고유 방문</td><td>3개월 300, 1년 2,000</td><td>월</td><td>GoatCounter</td></tr><tr><td>검색 유입 비율</td><td>50% 이상</td><td>월</td><td>GoatCounter 유입 경로</td></tr><tr><td>댓글·반응 있는 글 비율</td><td>30%</td><td>분기</td><td>giscus</td></tr><tr><td>영어판 조회 비율</td><td>20%</td><td>분기</td><td>GoatCounter 경로별</td></tr><tr><td>Lighthouse</td><td>성능·접근성 90 이상</td><td>배포마다</td><td>CI</td></tr><tr><td>블로그 코드 개선</td><td>분기 1건</td><td>분기</td><td>릴리스 태그</td></tr></tbody></table></div>
+<h2 id="s9">9. 열린 결정과 리스크</h2>
+<p>열린 결정은 여섯 개다. 각 선택지의 얻는 것과 잃는 것을 적고 권고를 달았다.</p>
+<div class="table-wrap"><table><thead><tr><th>결정</th><th>선택지</th><th>얻는 것</th><th>잃는 것</th><th>권고</th></tr></thead><tbody><tr><td>한·영 댓글 스레드</td><td>공유 (슬러그를 키로)</td><td>댓글이 한 곳에 모여 대화가 끊기지 않는다</td><td>한 스레드에 두 언어가 섞인다</td><td>공유</td></tr><tr><td></td><td>분리 (URL을 키로)</td><td>언어별 대화</td><td>댓글이 분산되고 영어판이 비어 보인다</td><td></td></tr><tr><td>블로그 이름·도메인</td><td>github.io 유지</td><td>비용 0, 결정 미룸</td><td>이름이 계정 핸들에 묶인다. 참고 사례에서는 소수</td><td>Phase 1 개설 전에 이름과 도메인을 정한다 (2.1 근거)</td></tr><tr><td></td><td>커스텀 도메인</td><td>고정 URL, 브랜드. 해외 사례 8명 중 7명</td><td>연 1~2만원, 이름을 지금 정해야 함</td><td></td></tr><tr><td>디자인시스템 적용</td><td>Phase 2에 적용</td><td>개인 산출물과 톤 통일</td><td>테마 업데이트 충돌, 다크 팔레트 추가 작업</td><td>글 10편 뒤 재판단</td></tr><tr><td></td><td>테마 유지</td><td>유지 비용 0</td><td>개성 없음</td><td></td></tr><tr><td>번역 검수</td><td>본인 검수만</td><td>빠름</td><td>어색한 표현 놓침</td><td>본인 검수 + AI 교차 확인</td></tr><tr><td></td><td>AI 교차 확인 추가</td><td>용어·수치 누락 잡음</td><td>한 단계 늘어남</td><td></td></tr><tr><td>소재 경계</td><td>업무 문제를 일반화</td><td>가장 생생한 소재</td><td>내부 정보 노출 위험</td><td>3.3 체크리스트로 통제</td></tr><tr><td></td><td>개인 프로젝트만</td><td>위험 0</td><td>소재 부족</td><td></td></tr><tr><td>Phase 3 진입</td><td>7절 조건 충족 시</td><td>필요할 때만 만든다</td><td>늘 미룰 수 있다</td><td>조건 충족 시, 단 학습 목적이면 앞당김</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>리스크</th><th>영향</th><th>대비</th></tr></thead><tbody><tr><td>AstroPaper의 i18n이 콘텐츠 다국어까지 다루지 않을 수 있다</td><td>직접 구성해야 하고 테마 업데이트와 충돌한다</td><td>Phase 0에서 확인, 커스텀은 별도 파일로 분리</td></tr><tr><td>격주 리듬 미달</td><td>8절 지표 미달, 동기 저하</td><td>소재 백로그 이슈, 짧은 글 유형 허용, 분기 조정</td></tr><tr><td>GoatCounter 무료 정책 변경·중단</td><td>조회수 표시 중단</td><td>어댑터로 Umami 무료 플랜 교체, 데이터 수출</td></tr><tr><td>giscus·Discussions 의존</td><td>Phase 3 이전 시 데이터 이동</td><td>GitHub GraphQL로 수출, 이전 계획을 Phase 3 범위에 포함</td></tr><tr><td>회사 정보 노출</td><td>신뢰와 계약 문제</td><td>3.3 체크리스트, 코드 재작성</td></tr><tr><td>GitHub Pages 대역폭 100 GB soft 초과</td><td>429 응답</td><td>이미지 최적화, 초과 시 Cloudflare로 이전</td></tr><tr><td>번역 품질 낮음</td><td>영어 독자 이탈</td><td>검수 단계 유지, 영어판 반응이 적으면 번역 범위 축소</td></tr></tbody></table></div>
+<h2 id="s10">10. 인터뷰 기록</h2>
+<p>2026-09-21 두 라운드로 진행했다. 질문·답변과 그로 정해진 결정이다.</p>
+<div class="table-wrap"><table><thead><tr><th>라운드</th><th>질문</th><th>답변</th><th>반영</th></tr></thead><tbody><tr><td>1</td><td>구축 방식</td><td>하이브리드로 시작</td><td>5.1, 5.3 어댑터</td></tr><tr><td>1</td><td>호스팅·도메인</td><td>3안의 얻는 것·잃는 것을 먼저 보여 달라</td><td>5.2 비교표</td></tr><tr><td>1</td><td>프레임워크</td><td>Astro</td><td>5.1</td></tr><tr><td>1</td><td>언어·독자</td><td>한·영 병행 발행</td><td>2절, 3.3</td></tr><tr><td>2</td><td>호스팅</td><td>GitHub Pages</td><td>5.2 결정</td></tr><tr><td>2</td><td>발행 리듬</td><td>추천 근거를 물은 뒤 격주 1편 수용</td><td>3절, 8절</td></tr><tr><td>2</td><td>디자인</td><td>테마 기본 디자인(AstroPaper)</td><td>6절</td></tr><tr><td>2</td><td>Phase 1 기능</td><td>조회수·검색·시리즈/태그·About 전부</td><td>4절, 7절</td></tr><tr><td>추가</td><td>참고 사례 17건 공통점 분석 (2026-09-21)</td><td>도메인을 Phase 1로, 구독을 Should로, 배포 단계 추가</td><td>2.1, 3.3, 4절, 7절, 9절</td></tr></tbody></table></div>
+<p>리듬을 지금 정한 이유: 8절 지표의 분모가 되고, 2주 사이클 워크플로우의 틀이 되며, 주 1편이면 번역 자동화가 Must로 올라가는 식으로 기능 우선순위가 달라진다. 분기마다 조정하는 기본값이지 약속이 아니다.</p>
+  <footer class="doc-footer">정본은 Claude Doc(개인 테크 블로그 PRD)이며 이 파일은 docs/PRD.md에서 tools/md2report.py로 생성한 읽기용 사본이다.</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js"></script>
+<script>if(window.mermaid){mermaid.initialize({startOnLoad:true,theme:'neutral',flowchart:{htmlLabels:true}});}</script>
+</body>
+</html>
