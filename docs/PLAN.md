@@ -13,8 +13,8 @@ PRD(docs/PRD.md)를 바탕으로 Phase 0과 Phase 1을 주 단위로 쪼갠 계�
 | 0.3 GitHub 레포 | 완료 (2026-09-22) | 공개 레포 juunghyun/juunghyun.github.io, 로컬 폴더도 같은 이름 |
 | 0.4 i18n 구조 | 완료 | ko `/`, en `/en/`, 같은 slug 로 번역 연결, hreflang·sitemap 대체 링크·언어별 RSS·OG 한글 폰트 |
 | 0.5 배포 | 워크플로우만 완료 | `.github/workflows/deploy.yml`. 실제 배포는 0.3 이후 |
-| 0.6 계정 | 대기 | giscus·GoatCounter 는 사용자 작업. id 를 `src/interactions.config.ts` 에 넣으면 켜진다 |
-| 0.7 상호작용 어댑터 | 완료 | Comments(giscus, 반응 포함)·ViewCount·Analytics. id 없으면 안내 문구만 |
+| 0.6 계정 | 완료 (2026-09-22) | giscus 앱 설치·Discussions(Announcements)·GoatCounter(juunghyun) 연결, id 는 `src/interactions.config.ts` |
+| 0.7 상호작용 어댑터 | 완료 | Comments(giscus, 반응 포함)·ViewCount(글별 + 하단 전체 방문)·Analytics. 로컬 렌더로 위젯 로드 확인 |
 | 1.3 시리즈·태그 | 완료 | frontmatter series/seriesOrder, SeriesNav, 언어별 태그 페이지 |
 | 1.4 읽기 기준 | 완료 | Pretendard 웹폰트, 본문 폭 45rem, keep-all, 코드 폰트 분리. Lighthouse 는 배포 후 측정 |
 | 1.5 OG 한글 | 완료 | Noto Sans KR 로 satori 렌더, 한글 제목 확인 |
