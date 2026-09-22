@@ -233,17 +233,17 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
           markerColor: [1, 0.42, 0.05] as Rgb,
           glowColor: [0.13, 0.15, 0.22] as Rgb,
           arcColor: [1, 0.6, 0.3] as Rgb,
-          mapBrightness: 1.6,
-          mapBaseBrightness: 1.6,
+          mapBrightness: 0,
+          mapBaseBrightness: 0,
         }
       : {
           dark: 0,
-          baseColor: [0.9, 0.93, 0.97] as Rgb,
+          baseColor: [0.84, 0.88, 0.94] as Rgb,
           markerColor: [0, 0.42, 0.67] as Rgb,
           glowColor: [1, 1, 1] as Rgb,
           arcColor: [0.2, 0.55, 0.8] as Rgb,
-          mapBrightness: 4,
-          mapBaseBrightness: 4,
+          mapBrightness: 0,
+          mapBaseBrightness: 0,
         };
   }
 
@@ -281,17 +281,24 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     const isOpen = () => root.dataset.state === "open";
 
     // ---------- 위치 (드래그로 이동, localStorage 보존)
-    function clampPosition(left: number, top: number) {
-      const rect = root.getBoundingClientRect();
-      const maxLeft = window.innerWidth - rect.width - 4;
-      const maxTop = window.innerHeight - rect.height - 4;
+    function clampPosition(
+      left: number,
+      top: number,
+      box: { width: number; height: number } = root.getBoundingClientRect()
+    ) {
+      const maxLeft = window.innerWidth - box.width - 4;
+      const maxTop = window.innerHeight - box.height - 4;
       return {
         left: Math.min(Math.max(4, left), Math.max(4, maxLeft)),
         top: Math.min(Math.max(4, top), Math.max(4, maxTop)),
       };
     }
-    function applyPosition(left: number, top: number) {
-      const pos = clampPosition(left, top);
+    function applyPosition(
+      left: number,
+      top: number,
+      box?: { width: number; height: number }
+    ) {
+      const pos = clampPosition(left, top, box);
       root.style.left = `${pos.left}px`;
       root.style.top = `${pos.top}px`;
       root.style.right = "auto";
@@ -318,8 +325,21 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     }
 
     // ---------- 렌더
-    function canvasSize() {
-      return Math.round(stage.getBoundingClientRect().width) || 88;
+    function targetSize(open: boolean) {
+      const narrow = window.innerWidth <= 640;
+      if (open) return Math.max(200, Math.min(400, window.innerWidth - 48));
+      return narrow ? 72 : 88;
+    }
+    function applySize() {
+      const size = targetSize(isOpen());
+      root.style.setProperty("--gg-size", `${size}px`);
+      return size;
+    }
+    /** 전환이 끝났을 때의 위젯 크기 (패딩·헤더·푸터 포함) */
+    function predictedBox(size: number) {
+      return isOpen()
+        ? { width: size + 20, height: size + 20 + 34 + 30 }
+        : { width: size + 12, height: size + 12 + 30 };
     }
 
     function markers() {
@@ -342,15 +362,15 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     function createOrRecreate() {
       if (!createGlobe) return;
       globe?.destroy();
-      const size = canvasSize();
+      const size = applySize();
       globe = createGlobe(canvas, {
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
         width: size,
         height: size,
         phi,
         theta,
-        diffuse: 1.2,
-        mapSamples: isOpen() ? 12000 : 5000,
+        diffuse: 1.4,
+        mapSamples: 2000,
         markerElevation: 0.02,
         arcWidth: 0.5,
         ...themeColors(),
@@ -413,6 +433,33 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
       syncLabels();
     }
 
+    /** 앞면에 보이는 노드 수 */
+    function visibleCount() {
+      if (!graph) return 0;
+      const rootStyle = getComputedStyle(document.documentElement);
+      return graph.nodes.filter(
+        n => rootStyle.getPropertyValue(`--cobe-visible-${n.id}`).trim() !== ""
+      ).length;
+    }
+
+    /** 노드가 가장 많이 보이는 방향으로 초기 각도를 잡는다 (12방향 시도) */
+    function orientToNodes() {
+      if (!globe || !graph || graph.nodes.length === 0) return;
+      let best = phi;
+      let bestCount = -1;
+      for (let k = 0; k < 12; k++) {
+        const candidate = (k * Math.PI) / 6;
+        globe.update({ phi: candidate, theta });
+        const count = visibleCount();
+        if (count > bestCount) {
+          bestCount = count;
+          best = candidate;
+        }
+      }
+      phi = best;
+      render();
+    }
+
     function loop() {
       if (!spinning && !dragging) {
         rendering = false;
@@ -455,6 +502,7 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
           createGlobe = mod.default as unknown as typeof createGlobe;
         }
         createOrRecreate();
+        orientToNodes();
         if (spinning) ensureLoop();
       } catch {
         root.setAttribute("data-hidden", "");
@@ -464,21 +512,22 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     // ---------- 열기 / 닫기
     function open() {
       if (isOpen()) return;
+      const rect = root.getBoundingClientRect();
       root.dataset.state = "open";
-      requestAnimationFrame(() => {
-        const rect = root.getBoundingClientRect();
-        applyPosition(rect.left, rect.top);
-        createOrRecreate();
-      });
+      const size = applySize();
+      // 오른쪽 아래에 붙어 있으면 왼쪽 위로 펼쳐지도록 최종 크기 기준으로 위치를 잡는다
+      const box = predictedBox(size);
+      applyPosition(rect.right - box.width, rect.bottom - box.height, box);
+      createOrRecreate();
     }
     function close() {
       if (!isOpen()) return;
+      const rect = root.getBoundingClientRect();
       root.dataset.state = "mini";
-      requestAnimationFrame(() => {
-        const rect = root.getBoundingClientRect();
-        applyPosition(rect.left, rect.top);
-        createOrRecreate();
-      });
+      const size = applySize();
+      const box = predictedBox(size);
+      applyPosition(rect.right - box.width, rect.bottom - box.height, box);
+      createOrRecreate();
     }
 
     // ---------- 포인터: 미니는 드래그=이동·클릭=열기, 열림은 헤더 드래그=이동·구 드래그=회전
@@ -589,9 +638,10 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
       attributeFilter: ["data-theme"],
     });
     window.addEventListener("resize", () => {
+      const size = applySize();
       const rect = root.getBoundingClientRect();
-      applyPosition(rect.left, rect.top);
-      if (isOpen()) createOrRecreate();
+      applyPosition(rect.left, rect.top, predictedBox(size));
+      createOrRecreate();
     });
     document.addEventListener("astro:page-load", async () => {
       // 언어가 바뀌면 그 언어의 글 지도로 갈아끼운다.
@@ -600,14 +650,16 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
         try {
           await loadGraph(true);
           createOrRecreate();
+          orientToNodes();
         } catch {
           /* keep previous graph */
         }
       }
     });
 
-    restorePosition();
     if (location.hash === "#globe") root.dataset.state = "open";
+    applySize();
+    restorePosition();
 
     const idle =
       window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 300));
@@ -615,7 +667,7 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
       boot().then(() => {
         if (isOpen()) {
           const rect = root.getBoundingClientRect();
-          applyPosition(rect.left, rect.top);
+          applyPosition(rect.left, rect.top, predictedBox(targetSize(true)));
         }
       });
     });
