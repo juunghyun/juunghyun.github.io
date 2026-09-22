@@ -10,7 +10,7 @@ PRD(docs/PRD.md)를 바탕으로 Phase 0과 Phase 1을 주 단위로 쪼갠 계�
 | --- | --- | --- |
 | 0.1 스캐폴딩 | 완료 | AstroPaper v6.1.0(Astro 6.4) 을 레포에 병합, pnpm 설치 |
 | 0.2 사이트 설정 | 완료 | 제목은 임시 `juunghyun`, 이름 결정 시 변경 |
-| 0.3 GitHub 레포 | 보류 | 사용자 결정으로 나중에 생성. 생성 후 `main` 푸시하면 배포 워크플로우가 돈다 |
+| 0.3 GitHub 레포 | 완료 (2026-09-22) | 공개 레포 juunghyun/juunghyun.github.io, 로컬 폴더도 같은 이름 |
 | 0.4 i18n 구조 | 완료 | ko `/`, en `/en/`, 같은 slug 로 번역 연결, hreflang·sitemap 대체 링크·언어별 RSS·OG 한글 폰트 |
 | 0.5 배포 | 워크플로우만 완료 | `.github/workflows/deploy.yml`. 실제 배포는 0.3 이후 |
 | 0.6 계정 | 대기 | giscus·GoatCounter 는 사용자 작업. id 를 `src/interactions.config.ts` 에 넣으면 켜진다 |

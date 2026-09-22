@@ -1,7 +1,7 @@
-# tech-blog
+# juunghyun.github.io
 
 이정현의 개인 테크 블로그. Astro + AstroPaper 위에 한국어(`/`)·영어(`/en/`) 두 언어를 얹은 정적 사이트다.
-GitHub Pages 사용자 사이트로 배포할 때 레포 이름을 `juunghyun.github.io`로 바꾼다.
+GitHub Pages 사용자 사이트(https://juunghyun.github.io)로 배포한다.
 
 PRD 정본(Claude Doc): https://claude.ai/code/artifact/057aee8b-6630-48b6-bb7e-fcbaf0b02009
 
