@@ -42,8 +42,15 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [
-        remarkToc,
-        [remarkCollapse, { test: "Table of contents" }],
+        // 글에 "## 목차" 또는 "## Table of contents" 헤딩을 두면 그 아래에 목차가 생성되고 접힌다.
+        [remarkToc, { heading: "목차|toc|table[ -]of[ -]contents?" }],
+        [
+          remarkCollapse,
+          {
+            test: /^(목차|table[ -]of[ -]contents?|toc)$/i,
+            summary: (heading: string) => heading,
+          },
+        ],
       ],
       rehypePlugins: [rehypeCallouts],
     }),

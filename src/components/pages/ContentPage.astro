@@ -8,29 +8,35 @@ import Footer from "@/components/Footer.astro";
 import { getAlternates, otherLocale, resolveLocale } from "@/utils/i18n";
 import config from "@/config";
 
-const locale = resolveLocale(Astro.currentLocale);
-const about = await getEntry("pages", `${locale}/about`);
+type Props = {
+  /** src/content/pages/<locale>/<slug>.md */
+  slug: "about" | "projects";
+};
 
-if (!about) {
+const { slug } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const page = await getEntry("pages", `${locale}/${slug}`);
+
+if (!page) {
   throw new Error(
-    `Missing content entry: src/content/pages/${locale}/about.md`
+    `Missing content entry: src/content/pages/${locale}/${slug}.md`
   );
 }
 
-const { Content } = await render(about);
+const { Content } = await render(page);
 const alternates = getAlternates(Astro.url.pathname, locale);
 ---
 
 <Layout
-  title={`${about.data.title} | ${config.site.title}`}
-  description={about.data.description}
-  ogImage={about.data.ogImage}
-  canonicalURL={about.data.canonicalURL}
+  title={`${page.data.title} | ${config.site.title}`}
+  description={page.data.description}
+  ogImage={page.data.ogImage}
+  canonicalURL={page.data.canonicalURL}
   {alternates}
 >
   <Header alternateUrl={alternates[otherLocale(locale)]} />
   <Breadcrumb />
-  <Main pageTitle={about.data.title} class="app-prose">
+  <Main pageTitle={page.data.title} class="app-prose">
     <Content />
   </Main>
   <Footer />

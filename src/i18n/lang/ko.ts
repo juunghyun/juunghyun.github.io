@@ -13,6 +13,7 @@ export default {
     posts: "글",
     tags: "태그",
     about: "소개",
+    projects: "프로젝트",
     archives: "아카이브",
     search: "검색",
   },

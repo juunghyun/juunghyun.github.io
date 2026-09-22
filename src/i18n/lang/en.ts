@@ -13,6 +13,7 @@ export default {
     posts: "Posts",
     tags: "Tags",
     about: "About",
+    projects: "Projects",
     archives: "Archives",
     search: "Search",
   },
