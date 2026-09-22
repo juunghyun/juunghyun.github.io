@@ -224,27 +224,17 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     return Boolean(probe.getContext("webgl2") || probe.getContext("webgl"));
   }
 
-  function themeColors() {
-    const dark = document.documentElement.getAttribute("data-theme") === "dark";
-    return dark
-      ? {
-          dark: 1,
-          baseColor: [0.2, 0.25, 0.38] as Rgb,
-          markerColor: [1, 0.42, 0.05] as Rgb,
-          glowColor: [0.13, 0.15, 0.22] as Rgb,
-          arcColor: [1, 0.6, 0.3] as Rgb,
-          mapBrightness: 0,
-          mapBaseBrightness: 0,
-        }
-      : {
-          dark: 0,
-          baseColor: [0.84, 0.88, 0.94] as Rgb,
-          markerColor: [0, 0.42, 0.67] as Rgb,
-          glowColor: [1, 1, 1] as Rgb,
-          arcColor: [0.2, 0.55, 0.8] as Rgb,
-          mapBrightness: 0,
-          mapBaseBrightness: 0,
-        };
+  /** 구 색은 테마와 무관하게 하나만 쓴다 (다크 배경에서도 밝은 구가 보이도록). */
+  function globeColors() {
+    return {
+      dark: 0,
+      baseColor: [0.84, 0.88, 0.94] as Rgb,
+      markerColor: [0, 0.42, 0.67] as Rgb,
+      glowColor: [1, 1, 1] as Rgb,
+      arcColor: [0.2, 0.55, 0.8] as Rgb,
+      mapBrightness: 0,
+      mapBaseBrightness: 0,
+    };
   }
 
   function setup(root: HTMLElement) {
@@ -373,7 +363,7 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
         mapSamples: 2000,
         markerElevation: 0.02,
         arcWidth: 0.5,
-        ...themeColors(),
+        ...globeColors(),
         markers: markers(),
         arcs: arcs(),
       });
@@ -630,13 +620,6 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     }
 
     // ---------- 테마·크기·언어 변화
-    new MutationObserver(() => {
-      if (globe) globe.update(themeColors());
-      render();
-    }).observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
     window.addEventListener("resize", () => {
       const size = applySize();
       const rect = root.getBoundingClientRect();
