@@ -41,9 +41,28 @@ export async function getPostListPaths(
   });
 }
 
+/**
+ * 발행(draft 아님) 글은 반드시 다른 언어 짝이 있어야 한다.
+ * 짝이 없으면 빌드를 실패시켜 배포가 올라가지 않게 한다 (한·영 병행 발행 원칙).
+ */
+export function assertTranslationsExist(allPosts: Post[]) {
+  const missing = allPosts
+    .filter(post => !post.data.draft && !findTranslation(allPosts, post))
+    .map(post => post.filePath ?? post.id);
+  if (missing.length > 0) {
+    throw new Error(
+      [
+        "짝이 되는 언어의 글이 없어 빌드를 멈춥니다. 같은 파일명으로 다른 언어 글을 추가하거나 draft: true 로 두세요.",
+        ...missing.map(path => `  - ${path}`),
+      ].join("\n")
+    );
+  }
+}
+
 /** 글 상세 경로 + 이전·다음·번역·시리즈 props */
 export async function getPostPagePaths(locale: Locale) {
   const allPosts = await getCollection("posts");
+  assertTranslationsExist(allPosts);
   const sortedPosts = getSortedPosts(filterByLocale(allPosts, locale));
 
   return sortedPosts.map((post, index) => {

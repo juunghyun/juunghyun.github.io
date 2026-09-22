@@ -2,12 +2,11 @@ import type { UIStrings } from "../types";
 
 export default {
   site: {
-    description: "백엔드 개발자 이정현이 일하며 얻은 인사이트와 문제 해결 기록",
+    description: "개발자 이정현을 기록",
   },
   lang: {
     name: "한국어",
     switchTo: "English",
-    noTranslation: "이 글은 아직 영어로 옮기지 않았습니다.",
   },
   nav: {
     home: "홈",
@@ -29,10 +28,10 @@ export default {
     editPage: "글 고치기",
     previousPost: "이전 글",
     nextPost: "다음 글",
-    views: "회 읽음",
+    views: "읽음",
     series: "시리즈",
     seriesPart: "{{total}}편 중 {{current}}편",
-    readInOtherLanguage: "이 글을 영어로 읽기",
+    readInOtherLanguage: "영어로 읽을래요",
   },
   interactions: {
     commentsTitle: "댓글",
@@ -44,9 +43,8 @@ export default {
     page: "페이지",
   },
   home: {
-    heroTitle: "안녕하세요.",
-    heroText:
-      "Kotlin과 Spring, 이벤트 기반 시스템을 다루는 백엔드 개발자 이정현입니다. 일하며 부딪힌 문제와 그 원인, 해결하면서 배운 것을 제 언어로 기록합니다. 모든 글은 영어로도 읽을 수 있습니다.",
+    heroTitle: "안녕하세요, 개발자 이정현입니다.",
+    heroText: "저를 기록합니다.",
     socialLinks: "링크",
     featured: "추천 글",
     recentPosts: "최근 글",

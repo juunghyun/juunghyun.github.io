@@ -5,7 +5,7 @@ export default defineAstroPaperConfig({
     url: "https://juunghyun.github.io/",
     // TODO 블로그 이름·도메인 결정 시 title·url 변경 (docs/PLAN.md 1.1)
     title: "juunghyun",
-    description: "백엔드 개발자 이정현이 일하며 얻은 인사이트와 문제 해결 기록",
+    description: "개발자 이정현을 기록",
     author: "이정현",
     profile: "https://github.com/juunghyun",
     ogImage: "default-og.jpg",

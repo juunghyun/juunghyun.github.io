@@ -114,7 +114,7 @@ const slug = getPostKey(post);
     </div>
 
     {
-      translation ? (
+      translationUrl && (
         <p data-pagefind-ignore class="text-muted-foreground mt-1 text-sm">
           <a
             href={translationUrl}
@@ -124,10 +124,6 @@ const slug = getPostKey(post);
           >
             {t.post.readInOtherLanguage}
           </a>
-        </p>
-      ) : (
-        <p data-pagefind-ignore class="text-muted-foreground mt-1 text-sm">
-          {t.lang.noTranslation}
         </p>
       )
     }

@@ -2,13 +2,11 @@ import type { UIStrings } from "../types";
 
 export default {
   site: {
-    description:
-      "Insights and troubleshooting notes from a backend developer, written in my own words.",
+    description: "A record of Junghyun Lee, developer.",
   },
   lang: {
     name: "English",
     switchTo: "한국어",
-    noTranslation: "This post is not translated yet.",
   },
   nav: {
     home: "Home",
@@ -33,7 +31,7 @@ export default {
     views: "views",
     series: "Series",
     seriesPart: "Part {{current}} of {{total}}",
-    readInOtherLanguage: "Read this post in Korean",
+    readInOtherLanguage: "Read in Korean",
   },
   interactions: {
     commentsTitle: "Comments",
@@ -45,9 +43,8 @@ export default {
     page: "Page",
   },
   home: {
-    heroTitle: "Hello.",
-    heroText:
-      "I'm Junghyun Lee, a backend developer working with Kotlin, Spring, and event-driven systems. Here I write down the problems I hit, why they happened, and what I learned fixing them. Every post is also available in Korean.",
+    heroTitle: "Hello, I'm Junghyun Lee, a developer.",
+    heroText: "This is where I record myself.",
     socialLinks: "Social Links",
     featured: "Featured",
     recentPosts: "Recent Posts",

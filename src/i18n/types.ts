@@ -8,8 +8,6 @@ export interface UIStrings {
     name: string;
     /** 다른 언어로 전환하는 링크 라벨 */
     switchTo: string;
-    /** 번역이 없는 글에서 다른 언어 목록으로 보낼 때 */
-    noTranslation: string;
   };
   nav: {
     home: string;
