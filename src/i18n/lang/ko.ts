@@ -38,6 +38,13 @@ export default {
     commentsTitle: "댓글",
     commentsPending: "GitHub Discussions 연결 후 댓글이 열립니다.",
   },
+  globe: {
+    title: "글 지도",
+    open: "글 지도 열기",
+    close: "닫기",
+    spin: "회전",
+    count: "{{count}}편",
+  },
   pagination: {
     prev: "이전",
     next: "다음",

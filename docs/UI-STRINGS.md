@@ -2,7 +2,7 @@
 
 2026-09-22 · 이정현
 
-메뉴·버튼·안내 문구 60개다. 파일은 `src/i18n/lang/ko.ts`, `src/i18n/lang/en.ts`이고 키 하나가 두 파일에 같은 이름으로 있다. `{...}` 는 실행 때 값이 들어가는 자리라 남겨야 한다.
+메뉴·버튼·안내 문구 65개다. 파일은 `src/i18n/lang/ko.ts`, `src/i18n/lang/en.ts`이고 키 하나가 두 파일에 같은 이름으로 있다. `{...}` 는 실행 때 값이 들어가는 자리라 남겨야 한다.
 
 | 키 | 쓰이는 곳 | 한국어 | 영어 |
 | --- | --- | --- | --- |
@@ -33,6 +33,11 @@
 | `post.readInOtherLanguage` | 글 페이지 | 영어로 읽을래요 | Read in Korean |
 | `interactions.commentsTitle` | 댓글 영역 | 댓글 | Comments |
 | `interactions.commentsPending` | 댓글 영역 | GitHub Discussions 연결 후 댓글이 열립니다. | Comments will open once GitHub Discussions is connected. |
+| `globe.title` | 글 지도 위젯 | 글 지도 | Post map |
+| `globe.open` | 글 지도 위젯 | 글 지도 열기 | Open post map |
+| `globe.close` | 글 지도 위젯 | 닫기 | Close |
+| `globe.spin` | 글 지도 위젯 | 회전 | Spin |
+| `globe.count` | 글 지도 위젯 | {{count}}편 | {{count}} posts |
 | `pagination.prev` | 목록 아래 페이지 이동 | 이전 | Prev |
 | `pagination.next` | 목록 아래 페이지 이동 | 다음 | Next |
 | `pagination.page` | 목록 아래 페이지 이동 | 페이지 | Page |

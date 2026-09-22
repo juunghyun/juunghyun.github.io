@@ -1,0 +1,630 @@
+---
+/**
+ * 글 지도: 우측 하단의 작은 구. 클릭하면 커지고, 글이 구면 위 노드로 보인다.
+ * 데이터는 /graph.json (언어별), 렌더는 cobe(WebGL). 노드 클릭은 cobe 앵커 위에 올린 <a> 가 받는다.
+ */
+import IconX from "@/assets/icons/IconX.svg";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { resolveLocale } from "@/utils/i18n";
+import { useTranslations } from "@/i18n";
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
+---
+
+<aside
+  id="graph-globe"
+  class="graph-globe"
+  data-state="mini"
+  data-locale={locale}
+  data-graph-url={graphUrl}
+  data-label-open={t.globe.open}
+  data-label-count={t.globe.count}
+  aria-label={t.globe.title}
+  transition:persist="graph-globe"
+>
+  <div class="gg-header" data-drag-handle>
+    <span class="gg-title">{t.globe.title}</span>
+    <button
+      type="button"
+      class="gg-close"
+      data-close
+      aria-label={t.globe.close}
+    >
+      <IconX class="size-5" />
+    </button>
+  </div>
+  <button
+    type="button"
+    class="gg-stage"
+    data-stage
+    aria-label={t.globe.open}
+    title={t.globe.open}
+  >
+    <canvas class="gg-canvas" data-canvas></canvas>
+  </button>
+  <div class="gg-footer">
+    <button
+      type="button"
+      class="gg-spin"
+      data-spin-toggle
+      aria-pressed="false"
+      title={t.globe.spin}
+    >
+      <span aria-hidden="true">&#8635;</span>
+      <span class="gg-spin-label">{t.globe.spin}</span>
+    </button>
+    <span class="gg-count" data-count></span>
+  </div>
+</aside>
+
+<style is:global>
+  .graph-globe {
+    --gg-size: 88px;
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 20px;
+    color: var(--foreground);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .graph-globe[data-state="open"] {
+    --gg-size: min(400px, calc(100vw - 48px));
+    padding: 10px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.18);
+  }
+  .graph-globe[data-hidden] {
+    display: none;
+  }
+  .gg-header {
+    display: none;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    cursor: grab;
+    padding: 0 2px 2px;
+  }
+  .graph-globe[data-state="open"] .gg-header {
+    display: flex;
+  }
+  .gg-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .gg-close {
+    padding: 4px;
+    border-radius: 6px;
+  }
+  .gg-close:hover {
+    color: var(--accent);
+  }
+  .gg-stage {
+    position: relative;
+    display: block;
+    width: var(--gg-size);
+    height: var(--gg-size);
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      width 0.25s ease,
+      height 0.25s ease;
+  }
+  .graph-globe[data-state="mini"] .gg-stage {
+    cursor: grab;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.2);
+  }
+  .graph-globe[data-state="mini"][data-dragging] .gg-stage,
+  .graph-globe[data-dragging] .gg-header {
+    cursor: grabbing;
+  }
+  .graph-globe[data-state="open"] .gg-stage {
+    cursor: grab;
+    overflow: visible;
+  }
+  .gg-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .gg-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .gg-label {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 8px));
+    max-width: 150px;
+    padding: 2px 7px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 11px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: auto;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .gg-label[data-visible] {
+    opacity: 0.92;
+  }
+  .gg-label:hover,
+  .gg-label:focus-visible {
+    opacity: 1;
+    color: var(--accent);
+    border-color: var(--accent);
+    z-index: 1;
+  }
+  .gg-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted-foreground);
+  }
+  .gg-spin {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--background);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .gg-spin[aria-pressed="true"] {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .graph-globe[data-state="mini"] .gg-spin-label {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    .graph-globe {
+      --gg-size: 72px;
+      right: 12px;
+      bottom: 12px;
+    }
+  }
+</style>
+
+<script>
+  import type { GraphData, GraphNode } from "@/utils/graph";
+
+  type Globe = {
+    update: (state: Record<string, unknown>) => void;
+    destroy: () => void;
+  };
+  type Rgb = [number, number, number];
+
+  const POS_KEY = "graph-globe:pos";
+  const SPIN_KEY = "graph-globe:spin";
+
+  function hasWebGL() {
+    const probe = document.createElement("canvas");
+    return Boolean(probe.getContext("webgl2") || probe.getContext("webgl"));
+  }
+
+  function themeColors() {
+    const dark = document.documentElement.getAttribute("data-theme") === "dark";
+    return dark
+      ? {
+          dark: 1,
+          baseColor: [0.2, 0.25, 0.38] as Rgb,
+          markerColor: [1, 0.42, 0.05] as Rgb,
+          glowColor: [0.13, 0.15, 0.22] as Rgb,
+          arcColor: [1, 0.6, 0.3] as Rgb,
+          mapBrightness: 1.6,
+          mapBaseBrightness: 1.6,
+        }
+      : {
+          dark: 0,
+          baseColor: [0.9, 0.93, 0.97] as Rgb,
+          markerColor: [0, 0.42, 0.67] as Rgb,
+          glowColor: [1, 1, 1] as Rgb,
+          arcColor: [0.2, 0.55, 0.8] as Rgb,
+          mapBrightness: 4,
+          mapBaseBrightness: 4,
+        };
+  }
+
+  function setup(root: HTMLElement) {
+    if (root.dataset.ready) return;
+    root.dataset.ready = "1";
+
+    if (!hasWebGL()) {
+      root.setAttribute("data-hidden", "");
+      return;
+    }
+
+    const stage = root.querySelector<HTMLButtonElement>("[data-stage]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-canvas]")!;
+    const header = root.querySelector<HTMLElement>("[data-drag-handle]")!;
+    const closeBtn = root.querySelector<HTMLButtonElement>("[data-close]")!;
+    const spinBtn =
+      root.querySelector<HTMLButtonElement>("[data-spin-toggle]")!;
+    const countEl = root.querySelector<HTMLElement>("[data-count]")!;
+
+    let globe: Globe | null = null;
+    let createGlobe:
+      | ((c: HTMLCanvasElement, o: Record<string, unknown>) => Globe)
+      | null = null;
+    let graph: GraphData | null = null;
+    let graphLocale = "";
+    let labels = new Map<string, HTMLAnchorElement>();
+    let labelsHost: HTMLElement | null = null;
+    let phi = 0.4;
+    let theta = 0.25;
+    let spinning = false;
+    let rafId = 0;
+    let rendering = false;
+
+    const isOpen = () => root.dataset.state === "open";
+
+    // ---------- 위치 (드래그로 이동, localStorage 보존)
+    function clampPosition(left: number, top: number) {
+      const rect = root.getBoundingClientRect();
+      const maxLeft = window.innerWidth - rect.width - 4;
+      const maxTop = window.innerHeight - rect.height - 4;
+      return {
+        left: Math.min(Math.max(4, left), Math.max(4, maxLeft)),
+        top: Math.min(Math.max(4, top), Math.max(4, maxTop)),
+      };
+    }
+    function applyPosition(left: number, top: number) {
+      const pos = clampPosition(left, top);
+      root.style.left = `${pos.left}px`;
+      root.style.top = `${pos.top}px`;
+      root.style.right = "auto";
+      root.style.bottom = "auto";
+      return pos;
+    }
+    function restorePosition() {
+      try {
+        const raw = localStorage.getItem(POS_KEY);
+        if (!raw) return;
+        const { left, top } = JSON.parse(raw) as { left: number; top: number };
+        if (Number.isFinite(left) && Number.isFinite(top))
+          applyPosition(left, top);
+      } catch {
+        /* 저장소를 못 읽으면 기본 위치(우측 하단) */
+      }
+    }
+    function savePosition(pos: { left: number; top: number }) {
+      try {
+        localStorage.setItem(POS_KEY, JSON.stringify(pos));
+      } catch {
+        /* ignore */
+      }
+    }
+
+    // ---------- 렌더
+    function canvasSize() {
+      return Math.round(stage.getBoundingClientRect().width) || 88;
+    }
+
+    function markers() {
+      return (graph?.nodes ?? []).map(n => ({
+        location: [n.lat, n.lng],
+        size: n.size,
+        id: n.id,
+      }));
+    }
+    function arcs() {
+      if (!graph) return [];
+      const byId = new Map(graph.nodes.map(n => [n.id, n]));
+      return graph.edges.flatMap(e => {
+        const a = byId.get(e.from);
+        const b = byId.get(e.to);
+        return a && b ? [{ from: [a.lat, a.lng], to: [b.lat, b.lng] }] : [];
+      });
+    }
+
+    function createOrRecreate() {
+      if (!createGlobe) return;
+      globe?.destroy();
+      const size = canvasSize();
+      globe = createGlobe(canvas, {
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        width: size,
+        height: size,
+        phi,
+        theta,
+        diffuse: 1.2,
+        mapSamples: isOpen() ? 12000 : 5000,
+        markerElevation: 0.02,
+        arcWidth: 0.5,
+        ...themeColors(),
+        markers: markers(),
+        arcs: arcs(),
+      });
+      // cobe 가 캔버스를 래퍼로 감싼다. 라벨은 그 래퍼 안에 둔다.
+      labelsHost = canvas.parentElement;
+      rebuildLabels();
+      render();
+    }
+
+    function rebuildLabels() {
+      for (const el of labels.values()) el.remove();
+      labels = new Map();
+      if (!labelsHost || !graph || !isOpen()) return;
+      let container = labelsHost.querySelector<HTMLElement>(".gg-labels");
+      if (!container) {
+        container = document.createElement("div");
+        container.className = "gg-labels";
+        labelsHost.appendChild(container);
+      }
+      for (const node of graph.nodes) {
+        const a = document.createElement("a");
+        a.className = "gg-label";
+        a.href = node.url;
+        a.textContent = node.title;
+        a.title = node.tags.join(", ");
+        a.dataset.id = node.id;
+        container.appendChild(a);
+        labels.set(node.id, a);
+      }
+    }
+
+    function syncLabels() {
+      if (!labelsHost || labels.size === 0) return;
+      const rootStyle = getComputedStyle(document.documentElement);
+      const anchors = labelsHost.querySelectorAll<HTMLElement>(
+        'div[style*="--cobe-"]'
+      );
+      for (const anchor of anchors) {
+        const match = /--cobe-([^;\s]+)/.exec(anchor.style.cssText);
+        if (!match) continue;
+        const label = labels.get(match[1]);
+        if (!label) continue;
+        const x = parseFloat(anchor.style.left);
+        label.style.left = `${Math.min(88, Math.max(12, x))}%`;
+        label.style.top = anchor.style.top;
+        const visible =
+          rootStyle.getPropertyValue(`--cobe-visible-${match[1]}`).trim() !==
+          "";
+        if (visible) label.setAttribute("data-visible", "");
+        else label.removeAttribute("data-visible");
+      }
+    }
+
+    function render() {
+      if (!globe) return;
+      globe.update({ phi, theta });
+      syncLabels();
+    }
+
+    function loop() {
+      if (!spinning && !dragging) {
+        rendering = false;
+        return;
+      }
+      if (spinning && !dragging) phi += 0.0035;
+      render();
+      rafId = requestAnimationFrame(loop);
+    }
+    function ensureLoop() {
+      if (rendering) return;
+      rendering = true;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(loop);
+    }
+
+    // ---------- 데이터
+    async function loadGraph(force = false) {
+      const lang = document.documentElement.lang || "ko";
+      if (!force && graph && graphLocale === lang) return;
+      const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+      const url =
+        lang === "en" ? `${base}/en/graph.json` : `${base}/graph.json`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`graph.json ${res.status}`);
+      graph = (await res.json()) as GraphData;
+      graphLocale = lang;
+      const tpl = root.dataset.labelCount ?? "{{count}}";
+      countEl.textContent = tpl.replace(
+        "{{count}}",
+        String(graph.nodes.length)
+      );
+    }
+
+    async function boot() {
+      try {
+        await loadGraph();
+        if (!createGlobe) {
+          const mod = await import("cobe");
+          createGlobe = mod.default as unknown as typeof createGlobe;
+        }
+        createOrRecreate();
+        if (spinning) ensureLoop();
+      } catch {
+        root.setAttribute("data-hidden", "");
+      }
+    }
+
+    // ---------- 열기 / 닫기
+    function open() {
+      if (isOpen()) return;
+      root.dataset.state = "open";
+      requestAnimationFrame(() => {
+        const rect = root.getBoundingClientRect();
+        applyPosition(rect.left, rect.top);
+        createOrRecreate();
+      });
+    }
+    function close() {
+      if (!isOpen()) return;
+      root.dataset.state = "mini";
+      requestAnimationFrame(() => {
+        const rect = root.getBoundingClientRect();
+        applyPosition(rect.left, rect.top);
+        createOrRecreate();
+      });
+    }
+
+    // ---------- 포인터: 미니는 드래그=이동·클릭=열기, 열림은 헤더 드래그=이동·구 드래그=회전
+    let dragging = false;
+    let dragMode: "move" | "rotate" | null = null;
+    let startX = 0;
+    let startY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+    let startPhi = 0;
+    let startTheta = 0;
+    let moved = false;
+
+    function onPointerDown(e: PointerEvent, mode: "move" | "rotate") {
+      if (e.button !== 0) return;
+      dragging = true;
+      dragMode = mode;
+      moved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = root.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      startPhi = phi;
+      startTheta = theta;
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      root.setAttribute("data-dragging", "");
+      if (mode === "rotate") ensureLoop();
+    }
+    function onPointerMove(e: PointerEvent) {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+      if (dragMode === "move") {
+        applyPosition(startLeft + dx, startTop + dy);
+      } else {
+        phi = startPhi + dx / 160;
+        theta = Math.max(-0.9, Math.min(0.9, startTheta + dy / 240));
+      }
+    }
+    function onPointerUp(e: PointerEvent) {
+      if (!dragging) return;
+      dragging = false;
+      root.removeAttribute("data-dragging");
+      (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+      if (dragMode === "move") {
+        const rect = root.getBoundingClientRect();
+        savePosition(clampPosition(rect.left, rect.top));
+        if (!moved && !isOpen()) open();
+      } else if (!moved) {
+        render();
+      }
+      dragMode = null;
+    }
+
+    stage.addEventListener("pointerdown", e =>
+      onPointerDown(e, isOpen() ? "rotate" : "move")
+    );
+    stage.addEventListener("pointermove", onPointerMove);
+    stage.addEventListener("pointerup", onPointerUp);
+    stage.addEventListener("pointercancel", onPointerUp);
+    header.addEventListener("pointerdown", e => {
+      if ((e.target as HTMLElement).closest("[data-close]")) return;
+      onPointerDown(e, "move");
+    });
+    header.addEventListener("pointermove", onPointerMove);
+    header.addEventListener("pointerup", onPointerUp);
+    header.addEventListener("pointercancel", onPointerUp);
+    stage.addEventListener("click", e => {
+      // 라벨(<a>) 클릭은 그대로 이동, 구 자체 클릭은 포인터업에서 처리
+      if (!(e.target as HTMLElement).closest("a")) e.preventDefault();
+    });
+    closeBtn.addEventListener("click", close);
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && isOpen()) close();
+    });
+    document.addEventListener("pointerdown", e => {
+      if (isOpen() && !root.contains(e.target as Node)) close();
+    });
+
+    // ---------- 회전 토글
+    function setSpin(on: boolean, persist = true) {
+      spinning = on;
+      spinBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      if (persist) {
+        try {
+          localStorage.setItem(SPIN_KEY, on ? "1" : "0");
+        } catch {
+          /* ignore */
+        }
+      }
+      if (on) ensureLoop();
+    }
+    spinBtn.addEventListener("click", () => setSpin(!spinning));
+    try {
+      setSpin(localStorage.getItem(SPIN_KEY) === "1", false);
+    } catch {
+      /* ignore */
+    }
+
+    // ---------- 테마·크기·언어 변화
+    new MutationObserver(() => {
+      if (globe) globe.update(themeColors());
+      render();
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    window.addEventListener("resize", () => {
+      const rect = root.getBoundingClientRect();
+      applyPosition(rect.left, rect.top);
+      if (isOpen()) createOrRecreate();
+    });
+    document.addEventListener("astro:page-load", async () => {
+      // 언어가 바뀌면 그 언어의 글 지도로 갈아끼운다.
+      const lang = document.documentElement.lang || "ko";
+      if (graph && graphLocale !== lang) {
+        try {
+          await loadGraph(true);
+          createOrRecreate();
+        } catch {
+          /* keep previous graph */
+        }
+      }
+    });
+
+    restorePosition();
+    if (location.hash === "#globe") root.dataset.state = "open";
+
+    const idle =
+      window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 300));
+    idle(() => {
+      boot().then(() => {
+        if (isOpen()) {
+          const rect = root.getBoundingClientRect();
+          applyPosition(rect.left, rect.top);
+        }
+      });
+    });
+  }
+
+  function init() {
+    const root = document.querySelector<HTMLElement>("#graph-globe");
+    if (root) setup(root);
+  }
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

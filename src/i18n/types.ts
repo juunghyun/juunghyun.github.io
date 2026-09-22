@@ -40,6 +40,15 @@ export interface UIStrings {
     commentsTitle: string;
     commentsPending: string;
   };
+  globe: {
+    /** 위젯 이름 (aria-label, 펼친 상태 제목) */
+    title: string;
+    open: string;
+    close: string;
+    spin: string;
+    /** "{{count}}" 자리에 글 수 */
+    count: string;
+  };
   pagination: {
     prev: string;
     next: string;

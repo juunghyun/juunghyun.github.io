@@ -38,6 +38,13 @@ export default {
     commentsTitle: "Comments",
     commentsPending: "Comments will open once GitHub Discussions is connected.",
   },
+  globe: {
+    title: "Post map",
+    open: "Open post map",
+    close: "Close",
+    spin: "Spin",
+    count: "{{count}} posts",
+  },
   pagination: {
     prev: "Prev",
     next: "Next",

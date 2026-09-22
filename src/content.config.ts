@@ -24,6 +24,8 @@ const posts = defineCollection({
       /** 연재 묶음 이름. 같은 언어·같은 series 글끼리 seriesOrder 순으로 잇는다. */
       series: z.string().optional(),
       seriesOrder: z.number().int().positive().optional(),
+      /** 글 지도(구 위젯)에서 선으로 잇는 글의 slug 목록. 같은 언어 안에서만 찾는다. */
+      related: z.array(z.string()).optional(),
     }),
 });
 

@@ -8,6 +8,7 @@ import { LOCALE_TAGS, DEFAULT_LOCALE, resolveLocale } from "@/utils/i18n";
 import type { Locale } from "@/utils/i18n";
 import { useTranslations } from "@/i18n";
 import Analytics from "@/components/interactions/Analytics.astro";
+import GraphGlobe from "@/components/GraphGlobe.astro";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -158,6 +159,7 @@ const xDefault = alternates[DEFAULT_LOCALE] ?? alternates[locale];
     class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col"
   >
     <slot />
+    <GraphGlobe />
     <script>
       import "@/scripts/theme";
     </script>

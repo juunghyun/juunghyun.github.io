@@ -129,6 +129,7 @@ Phase 1은 Must 전부를 갖추고 연다. 우선순위는 MoSCoW(Must, Should,
 | RSS, sitemap, OG 이미지 | Must | 1 | AstroPaper 내장, RSS는 언어별 | 언어별 피드, 글마다 OG 이미지 |
 | 다크모드 | Must | 1 | 테마 내장 | 시스템 설정 따라감 + 토글 |
 | 관련 글, 이전·다음 글 | Should | 2 | 태그 겹침 기반 | 글 하단 3편 |
+| 글 지도(구 위젯) | Must | 1 | cobe(WebGL, 5.8KB) + 빌드 시 graph.json. 노드=글, 군집=첫 태그, 선=시리즈·related | 우측 하단 작은 구, 클릭 확대, 노드 클릭 이동, 드래그 이동, 회전 토글, 글 수 무관하게 표시 |
 | 커스텀 도메인 | Should | 1 | 이름 결정 후 CNAME + DNS, 연 1~2만원 | 개설 시점에 연결, github.io 주소는 리다이렉트 |
 | 이미지 최적화, 캐션 | Should | 2 | Astro Image | webp, 지연 로딩 |
 | 다이어그램, 수식 | Should | 2 | mermaid 빌드 렌더, KaTeX | 빌드 시 SVG |
