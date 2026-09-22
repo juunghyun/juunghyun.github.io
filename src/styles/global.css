@@ -50,3 +50,28 @@ pre,
 samp {
   font-family: var(--font-code), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+
+/* 테마 전환 효과: 새 화면이 왼쪽부터 드러난다. 화면 1/10 까지는 천천히, 그 다음은 순식간에. */
+:root[data-theme-switching]::view-transition-old(root),
+:root[data-theme-switching]::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+:root[data-theme-switching]::view-transition-old(root) {
+  animation: none;
+}
+:root[data-theme-switching]::view-transition-new(root) {
+  animation: theme-wipe 0.55s linear both;
+}
+@keyframes theme-wipe {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    animation-timing-function: ease-in;
+  }
+  60% {
+    clip-path: inset(0 90% 0 0);
+    animation-timing-function: cubic-bezier(0.1, 0.8, 0.2, 1);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}

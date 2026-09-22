@@ -15,9 +15,36 @@ let themeValue: string =
   (window as unknown as { __theme?: { value: string } }).__theme?.value ??
   getPreferredTheme();
 
-function persist(): void {
+const SWITCHING_ATTR = "data-theme-switching";
+
+/**
+ * 테마를 적용한다. 브라우저가 View Transitions 를 지원하면 왼쪽부터 드러나는
+ * 전환 효과(global.css 의 theme-wipe)로, 아니면 즉시 바꾼다.
+ */
+function applyTheme(animated: boolean): void {
+  const doc = document as Document & {
+    startViewTransition?: (update: () => void) => { finished: Promise<void> };
+  };
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+  if (
+    !animated ||
+    reduceMotion ||
+    typeof doc.startViewTransition !== "function"
+  ) {
+    reflect();
+    return;
+  }
+  const root = document.documentElement;
+  root.setAttribute(SWITCHING_ATTR, "");
+  const transition = doc.startViewTransition(() => reflect());
+  transition.finished.finally(() => root.removeAttribute(SWITCHING_ATTR));
+}
+
+function persist(animated = true): void {
   localStorage.setItem(THEME_KEY, themeValue);
-  reflect();
+  applyTheme(animated);
 }
 
 function reflect(): void {
