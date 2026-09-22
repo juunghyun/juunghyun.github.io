@@ -35,15 +35,18 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
       <IconX class="size-5" />
     </button>
   </div>
-  <button
-    type="button"
-    class="gg-stage"
-    data-stage
-    aria-label={t.globe.open}
-    title={t.globe.open}
-  >
-    <canvas class="gg-canvas" data-canvas></canvas>
-  </button>
+  <div class="gg-stage-wrap">
+    <button
+      type="button"
+      class="gg-stage"
+      data-stage
+      aria-label={t.globe.open}
+      title={t.globe.open}
+    >
+      <canvas class="gg-canvas" data-canvas></canvas>
+    </button>
+    <div class="gg-labels" data-labels></div>
+  </div>
   <div class="gg-footer">
     <button
       type="button"
@@ -109,19 +112,24 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
   .gg-close:hover {
     color: var(--accent);
   }
+  .gg-stage-wrap {
+    position: relative;
+    width: var(--gg-size);
+    height: var(--gg-size);
+    transition:
+      width 0.25s ease,
+      height 0.25s ease;
+  }
   .gg-stage {
     position: relative;
     display: block;
-    width: var(--gg-size);
-    height: var(--gg-size);
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     overflow: hidden;
     padding: 0;
     background: transparent;
     cursor: pointer;
-    transition:
-      width 0.25s ease,
-      height 0.25s ease;
   }
   .graph-globe[data-state="mini"] .gg-stage {
     cursor: grab;
@@ -144,6 +152,12 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     position: absolute;
     inset: 0;
     pointer-events: none;
+  }
+  .graph-globe[data-state="mini"] .gg-labels {
+    display: none;
+  }
+  [data-theme="dark"] .graph-globe[data-state="mini"] .gg-stage {
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.5);
   }
   .gg-label {
     position: absolute;
@@ -224,17 +238,31 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     return Boolean(probe.getContext("webgl2") || probe.getContext("webgl"));
   }
 
-  /** 구 색은 테마와 무관하게 하나만 쓴다 (다크 배경에서도 밝은 구가 보이도록). */
+  /**
+   * 구 색. cobe 의 dark 옵션은 1 이면 구가 거의 안 보여서 항상 0 으로 두고,
+   * 다크모드에서는 광택을 줄인 차분한 회청색으로 눈부심을 낮춘다.
+   */
   function globeColors() {
-    return {
-      dark: 0,
-      baseColor: [0.84, 0.88, 0.94] as Rgb,
-      markerColor: [0, 0.42, 0.67] as Rgb,
-      glowColor: [1, 1, 1] as Rgb,
-      arcColor: [0.2, 0.55, 0.8] as Rgb,
-      mapBrightness: 0,
-      mapBaseBrightness: 0,
-    };
+    const dark = document.documentElement.getAttribute("data-theme") === "dark";
+    return dark
+      ? {
+          dark: 0,
+          baseColor: [0.3, 0.34, 0.44] as Rgb,
+          markerColor: [1, 0.55, 0.2] as Rgb,
+          glowColor: [0.16, 0.18, 0.25] as Rgb,
+          arcColor: [0.9, 0.55, 0.3] as Rgb,
+          mapBrightness: 0,
+          mapBaseBrightness: 0,
+        }
+      : {
+          dark: 0,
+          baseColor: [0.84, 0.88, 0.94] as Rgb,
+          markerColor: [0, 0.42, 0.67] as Rgb,
+          glowColor: [1, 1, 1] as Rgb,
+          arcColor: [0.2, 0.55, 0.8] as Rgb,
+          mapBrightness: 0,
+          mapBaseBrightness: 0,
+        };
   }
 
   function setup(root: HTMLElement) {
@@ -253,6 +281,7 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     const spinBtn =
       root.querySelector<HTMLButtonElement>("[data-spin-toggle]")!;
     const countEl = root.querySelector<HTMLElement>("[data-count]")!;
+    const labelsLayer = root.querySelector<HTMLElement>("[data-labels]")!;
 
     let globe: Globe | null = null;
     let createGlobe:
@@ -367,7 +396,7 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
         markers: markers(),
         arcs: arcs(),
       });
-      // cobe 가 캔버스를 래퍼로 감싼다. 라벨은 그 래퍼 안에 둔다.
+      // cobe 가 캔버스를 래퍼로 감싸고 그 안에 마커 앵커를 둔다. 라벨은 버튼 밖 겹침 층에 둔다.
       labelsHost = canvas.parentElement;
       rebuildLabels();
       render();
@@ -376,13 +405,8 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     function rebuildLabels() {
       for (const el of labels.values()) el.remove();
       labels = new Map();
-      if (!labelsHost || !graph || !isOpen()) return;
-      let container = labelsHost.querySelector<HTMLElement>(".gg-labels");
-      if (!container) {
-        container = document.createElement("div");
-        container.className = "gg-labels";
-        labelsHost.appendChild(container);
-      }
+      if (!graph || !isOpen()) return;
+      const container = labelsLayer;
       for (const node of graph.nodes) {
         const a = document.createElement("a");
         a.className = "gg-label";
@@ -587,10 +611,7 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     header.addEventListener("pointermove", onPointerMove);
     header.addEventListener("pointerup", onPointerUp);
     header.addEventListener("pointercancel", onPointerUp);
-    stage.addEventListener("click", e => {
-      // 라벨(<a>) 클릭은 그대로 이동, 구 자체 클릭은 포인터업에서 처리
-      if (!(e.target as HTMLElement).closest("a")) e.preventDefault();
-    });
+    stage.addEventListener("click", e => e.preventDefault());
     closeBtn.addEventListener("click", close);
     document.addEventListener("keydown", e => {
       if (e.key === "Escape" && isOpen()) close();
@@ -620,6 +641,13 @@ const graphUrl = getRelativeLocaleUrl(locale, "graph.json");
     }
 
     // ---------- 테마·크기·언어 변화
+    new MutationObserver(() => {
+      if (globe) globe.update(globeColors());
+      render();
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
     window.addEventListener("resize", () => {
       const size = applySize();
       const rect = root.getBoundingClientRect();
