@@ -37,7 +37,7 @@ const interactions: InteractionsConfig = {
   },
   views: {
     provider: "goatcounter",
-    code: "",
+    code: "juunghyun",
   },
 };
 
