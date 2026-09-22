@@ -100,7 +100,7 @@ const slug = getPostKey(post);
 
     <div class="my-2 flex flex-wrap items-center gap-x-2 gap-y-1">
       <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-      <ViewCount path={postPath} />
+      <ViewCount path={postPath} template={t.post.views} />
       <span
         aria-hidden="true"
         class:list={[

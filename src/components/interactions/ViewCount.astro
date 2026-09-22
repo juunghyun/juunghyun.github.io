@@ -4,18 +4,19 @@
  * 코드가 없으면 아무것도 그리지 않는다.
  */
 import interactions, { viewsEnabled } from "@/interactions.config";
-import { resolveLocale } from "@/utils/i18n";
-import { useTranslations } from "@/i18n";
 
 type Props = {
-  /** 집계할 페이지 경로. 언어별 URL 마다 따로 센다. */
+  /** 집계할 페이지 경로. 언어별 URL 마다 따로 센다. "TOTAL" 이면 사이트 전체 방문. */
   path: string;
+  /** "{{count}}" 자리에 숫자가 들어가는 문구 */
+  template: string;
   class?: string;
 };
 
-const { path, class: className = "" } = Astro.props;
-const t = useTranslations(resolveLocale(Astro.currentLocale));
-const endpoint = `https://${interactions.views.code}.goatcounter.com/counter/${encodeURIComponent(path)}.json`;
+const { path, template, class: className = "" } = Astro.props;
+const target = path === "TOTAL" ? "TOTAL" : encodeURIComponent(path);
+const endpoint = `https://${interactions.views.code}.goatcounter.com/counter/${target}.json`;
+const [before = "", after = ""] = template.split("{{count}}");
 ---
 
 {
@@ -25,7 +26,9 @@ const endpoint = `https://${interactions.views.code}.goatcounter.com/counter/${e
       data-view-count
       data-endpoint={endpoint}
     >
-      <span data-view-count-value>–</span> {t.post.views}
+      {before}
+      <span data-view-count-value>–</span>
+      {after}
     </span>
   )
 }

@@ -29,7 +29,7 @@ export default {
     editPage: "글 고치기",
     previousPost: "이전 글",
     nextPost: "다음 글",
-    views: "읽음",
+    views: "{{count}} 읽음",
     series: "시리즈",
     seriesPart: "{{total}}편 중 {{current}}편",
     readInOtherLanguage: "영어로 읽을래요",
@@ -54,6 +54,7 @@ export default {
   footer: {
     copyright: "Copyright",
     allRightsReserved: "All rights reserved.",
+    totalVisits: "전체 방문 {{count}}",
   },
   pages: {
     tagTitle: "태그",

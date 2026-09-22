@@ -30,6 +30,7 @@ export interface UIStrings {
     editPage: string;
     previousPost: string;
     nextPost: string;
+    /** "{{count}}" 자리에 조회수가 들어간다 */
     views: string;
     series: string;
     seriesPart: string;
@@ -55,6 +56,8 @@ export interface UIStrings {
   footer: {
     copyright: string;
     allRightsReserved: string;
+    /** "{{count}}" 자리에 사이트 전체 방문 수가 들어간다 */
+    totalVisits: string;
   };
   pages: {
     tagTitle: string;

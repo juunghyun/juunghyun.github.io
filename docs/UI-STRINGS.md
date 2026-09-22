@@ -2,7 +2,7 @@
 
 2026-09-22 · 이정현
 
-메뉴·버튼·안내 문구 58개다. 파일은 `src/i18n/lang/ko.ts`, `src/i18n/lang/en.ts`이고 키 하나가 두 파일에 같은 이름으로 있다. 2026-09-22 검토 반영본. `{...}` 는 실행 때 값이 들어가는 자리라 남겨야 한다.
+메뉴·버튼·안내 문구 60개다. 파일은 `src/i18n/lang/ko.ts`, `src/i18n/lang/en.ts`이고 키 하나가 두 파일에 같은 이름으로 있다. `{...}` 는 실행 때 값이 들어가는 자리라 남겨야 한다.
 
 | 키 | 쓰이는 곳 | 한국어 | 영어 |
 | --- | --- | --- | --- |
@@ -13,6 +13,7 @@
 | `nav.posts` | 상단 메뉴·브레드크럼 | 글 | Posts |
 | `nav.tags` | 상단 메뉴·브레드크럼 | 태그 | Tags |
 | `nav.about` | 상단 메뉴·브레드크럼 | 소개 | About |
+| `nav.projects` | 상단 메뉴·브레드크럼 | 프로젝트 | Projects |
 | `nav.archives` | 상단 메뉴·브레드크럼 | 아카이브 | Archives |
 | `nav.search` | 상단 메뉴·브레드크럼 | 검색 | Search |
 | `post.publishedAt` | 글 페이지 | 발행 | Published at |
@@ -26,7 +27,7 @@
 | `post.editPage` | 글 페이지 | 글 고치기 | Edit page |
 | `post.previousPost` | 글 페이지 | 이전 글 | Previous Post |
 | `post.nextPost` | 글 페이지 | 다음 글 | Next Post |
-| `post.views` | 글 페이지 | 읽음 | views |
+| `post.views` | 글 페이지 | {{count}} 읽음 | {{count}} views |
 | `post.series` | 글 페이지 | 시리즈 | Series |
 | `post.seriesPart` | 글 페이지 | {{total}}편 중 {{current}}편 | Part {{current}} of {{total}} |
 | `post.readInOtherLanguage` | 글 페이지 | 영어로 읽을래요 | Read in Korean |
@@ -43,6 +44,7 @@
 | `home.allPosts` | 홈 화면 | 전체 글 | All Posts |
 | `footer.copyright` | 하단 | Copyright | Copyright |
 | `footer.allRightsReserved` | 하단 | All rights reserved. | All rights reserved. |
+| `footer.totalVisits` | 하단 | 전체 방문 {{count}} | {{count}} visitors |
 | `pages.tagTitle` | 목록 페이지 제목·설명 | 태그 | Tag |
 | `pages.tagDesc` | 목록 페이지 제목·설명 | 이 태그가 붙은 글 | All the articles with the tag |
 | `pages.tagsTitle` | 목록 페이지 제목·설명 | 태그 | Tags |

@@ -29,7 +29,7 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
-    views: "views",
+    views: "{{count}} views",
     series: "Series",
     seriesPart: "Part {{current}} of {{total}}",
     readInOtherLanguage: "Read in Korean",
@@ -54,6 +54,7 @@ export default {
   footer: {
     copyright: "Copyright",
     allRightsReserved: "All rights reserved.",
+    totalVisits: "{{count}} visitors",
   },
   pages: {
     tagTitle: "Tag",
