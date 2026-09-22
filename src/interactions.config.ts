@@ -29,9 +29,9 @@ const interactions: InteractionsConfig = {
   comments: {
     provider: "giscus",
     repo: "juunghyun/juunghyun.github.io",
-    repoId: "",
-    category: "Comments",
-    categoryId: "",
+    repoId: "R_kgDOUkxvOg",
+    category: "Announcements",
+    categoryId: "DIC_kwDOUkxvOs4DGIO6",
     termStrategy: "shared-slug",
     reactionsEnabled: true,
   },
