@@ -3,7 +3,7 @@
 이정현의 개인 테크 블로그. Astro + AstroPaper 위에 한국어(`/`)·영어(`/en/`) 두 언어를 얹은 정적 사이트다.
 GitHub Pages 사용자 사이트(https://juunghyun.github.io)로 배포한다.
 
-PRD 정본(Claude Doc): https://claude.ai/code/artifact/057aee8b-6630-48b6-bb7e-fcbaf0b02009
+기획서: [docs/PRD.md](docs/PRD.md) · 실행 계획: [docs/PLAN.md](docs/PLAN.md) · 문구 검토표: [docs/UI-STRINGS.md](docs/UI-STRINGS.md)
 
 ## 실행
 
@@ -19,20 +19,21 @@ Node 22.12 이상, pnpm 11.
 
 ## 구조
 
-| 경로                                  | 내용                                                                          |
-| ------------------------------------- | ----------------------------------------------------------------------------- |
-| `astro-paper.config.ts`               | 사이트 제목·URL·작성자·기능 토글                                              |
-| `src/interactions.config.ts`          | 댓글(giscus)·조회수(GoatCounter) 설정. id 를 비우면 해당 기능이 조용히 꺼진다 |
-| `src/content/posts/{ko,en}/<slug>.md` | 글. 한·영은 같은 파일명(slug)을 쓴다                                          |
-| `src/content/pages/{ko,en}/about.md`  | 소개 페이지                                                                   |
-| `src/i18n/lang/{ko,en}.ts`            | UI 문구                                                                       |
-| `src/utils/i18n.ts`                   | 언어 판정·번역 글 찾기·hreflang 대응 URL                                      |
-| `src/utils/routes.ts`                 | 언어별 getStaticPaths 공용 헬퍼                                               |
-| `src/components/pages/*`              | 페이지 본체. `src/pages/*`(ko)와 `src/pages/en/*`는 이걸 감싸는 얇은 라우트   |
-| `src/components/interactions/*`       | Comments · ViewCount · Analytics 어댑터                                       |
-| `src/components/post/SeriesNav.astro` | 시리즈 목록·순서                                                              |
-| `docs/PRD.md`, `docs/PLAN.md`         | 기획서와 실행 계획 (`docs/*.html` 은 읽기용 렌더)                             |
-| `tools/md2report.py`                  | docs 마크다운을 HTML 로 변환                                                  |
+| 경로                                  | 내용                                                                                |
+| ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `astro-paper.config.ts`               | 사이트 제목·URL·작성자·기능 토글                                                    |
+| `src/interactions.config.ts`          | 댓글(giscus)·조회수(GoatCounter) 설정. id 를 비우면 해당 기능이 조용히 꺼진다       |
+| `src/content/posts/{ko,en}/<slug>.md` | 글. 한·영은 같은 파일명(slug)을 쓴다                                                |
+| `src/content/pages/{ko,en}/about.md`  | 소개 페이지                                                                         |
+| `src/i18n/lang/{ko,en}.ts`            | UI 문구                                                                             |
+| `src/utils/i18n.ts`                   | 언어 판정·번역 글 찾기·hreflang 대응 URL                                            |
+| `src/utils/routes.ts`                 | 언어별 getStaticPaths 공용 헬퍼                                                     |
+| `src/components/pages/*`              | 페이지 본체. `src/pages/*`(ko)와 `src/pages/en/*`는 이걸 감싸는 얇은 라우트         |
+| `src/components/interactions/*`       | Comments · ViewCount · Analytics 어댑터                                             |
+| `src/components/post/SeriesNav.astro` | 시리즈 목록·순서                                                                    |
+| `src/components/GraphGlobe.astro`     | 글 지도 위젯(cobe). 데이터는 `src/utils/graph.ts` → `/graph.json`, `/en/graph.json` |
+| `docs/PRD.md`, `docs/PLAN.md`         | 기획서와 실행 계획 (`docs/*.html` 은 읽기용 렌더)                                   |
+| `tools/md2report.py`                  | docs 마크다운을 HTML 로 변환                                                        |
 
 ## 글 쓰기
 
