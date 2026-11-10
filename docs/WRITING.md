@@ -44,6 +44,7 @@ pnpm new-post <slug> "한국어 제목" "English title"   # ko·en 두 파일을
 ---
 title: 제목
 description: 한두 문장 요약 (검색 결과·OG 에 쓰인다)
+summary: 핵심만 한 줄 (프로필 README 의 글 목록에 쓰인다, 선택)
 pubDatetime: 2026-10-05T09:00:00+09:00
 tags: [Kotlin, Spring]
 series: jpa-pitfalls # 선택

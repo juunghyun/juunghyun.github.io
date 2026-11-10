@@ -1,6 +1,7 @@
 ---
 title: '"The formats are all over the place, just build me a perfect Excel parser": how I handled it'
 description: "Pulling data out of Excel files with no fixed format: how I split work between the LLM and code, and what I learned about memory, value fidelity, and schemas."
+summary: "How I split the work between the LLM and code"
 pubDatetime: 2026-10-06T15:36:02+09:00
 tags: [LLM, Python, Excel, Kafka]
 ---

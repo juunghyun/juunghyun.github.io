@@ -1,6 +1,7 @@
 ---
 title: "It took me three days to add one HttpOnly to a refresh token"
 description: "Moving an SPA's refresh token into an HttpOnly cookie that JavaScript can't read: what that stopped and what it didn't, the refresh race I found after shipping and how I plan to fix it, and the concepts and lessons I picked up along the way."
+summary: "What HttpOnly stops and what it doesn't, plus the refresh race I found after shipping"
 pubDatetime: 2026-11-10T16:15:00+09:00
 tags: [Security, SSO, Cookie, Next.js]
 ---

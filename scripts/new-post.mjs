@@ -21,11 +21,11 @@ const seoul = new Date(now.getTime() + 9 * 60 * 60 * 1000);
 const pubDatetime = seoul.toISOString().replace(/\.\d{3}Z$/, "+09:00");
 
 const files = [
-  { locale: "ko", title: koTitle, description: "한두 문장 요약. 검색 결과와 OG 에 쓰인다." },
-  { locale: "en", title: enTitle, description: "One or two sentence summary, used in search results and OG." },
+  { locale: "ko", title: koTitle, description: "한두 문장 요약. 검색 결과와 OG 에 쓰인다.", summary: "핵심만 한 줄. 프로필 README 의 글 목록에 쓰인다." },
+  { locale: "en", title: enTitle, description: "One or two sentence summary, used in search results and OG.", summary: "The core value in one line." },
 ];
 
-for (const { locale, title, description } of files) {
+for (const { locale, title, description, summary } of files) {
   const dir = join("src", "content", "posts", locale);
   const path = join(dir, `${slug}.md`);
   if (existsSync(path)) {
@@ -38,6 +38,7 @@ for (const { locale, title, description } of files) {
     `---
 title: ${JSON.stringify(title)}
 description: ${JSON.stringify(description)}
+summary: ${JSON.stringify(summary)}
 pubDatetime: ${pubDatetime}
 tags: []
 # series: 

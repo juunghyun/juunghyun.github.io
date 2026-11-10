@@ -15,6 +15,8 @@ export type GraphNode = {
   title: string;
   url: string;
   tags: string[];
+  /** 한 줄 요약(글 머리말의 summary). 프로필 README 가 읽는다. */
+  summary?: string;
   series?: string;
   cluster: string;
   lat: number;
@@ -157,6 +159,7 @@ export async function buildGraph(locale: Locale): Promise<GraphData> {
       title: post.data.title,
       url: getPostUrl(post.id, post.filePath, locale),
       tags: post.data.tags,
+      summary: post.data.summary,
       series: post.data.series,
       cluster,
       lat: Number(lat.toFixed(3)),

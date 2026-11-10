@@ -1,6 +1,7 @@
 ---
 title: "refreshToken에 HttpOnly 하나 붙이는 데 사흘이 걸렸다"
 description: "SPA의 refreshToken을 JS가 읽지 못하는 HttpOnly 쿠키로 옮긴 작업 기록. 무엇을 막았고 무엇은 못 막았는지, 배포한 뒤에 찾은 재발급 경합과 고칠 계획, 그 과정에서 배운 개념과 판단."
+summary: "HttpOnly가 막는 것과 못 막는 것, 그리고 배포 뒤에 찾은 재발급 경합"
 pubDatetime: 2026-11-10T16:15:00+09:00
 tags: [Security, SSO, Cookie, Next.js]
 ---

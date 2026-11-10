@@ -1,6 +1,7 @@
 ---
 title: "Why I started this blog"
 description: "Work got faster with AI, but my own growth seemed to stall. That's the pain point behind this blog, where I write down the problems I actually hit and how I solved them, in my own words."
+summary: "Writing down the problems I meet and how I solve them, in my own words"
 pubDatetime: 2026-09-22T09:00:00+09:00
 tags: [blog, AI]
 ---

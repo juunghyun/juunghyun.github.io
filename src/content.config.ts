@@ -18,6 +18,8 @@ const posts = defineCollection({
       tags: z.array(z.string()).default(["others"]),
       ogImage: image().or(z.string()).optional(),
       description: z.string(),
+      /** 한 줄 요약. graph.json 에 실려 프로필 README 의 글 목록이 읽어 쓴다. */
+      summary: z.string().optional(),
       canonicalURL: z.string().optional(),
       hideEditPost: z.boolean().optional(),
       timezone: z.string().optional(),
