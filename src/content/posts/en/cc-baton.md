@@ -4,6 +4,7 @@ description: "cc-baton is a CLI that moves a conversation between two Claude acc
 summary: "Choices and failures from building a tool that moves a whole conversation, not a summary"
 pubDatetime: 2026-11-10T20:05:00+09:00
 tags: [Claude Code, CLI, Python, Go]
+related: [oss-from-scratch]
 ---
 
 I use two Claude accounts. I pay for both. Money melts twice as fast😎 💸
@@ -169,4 +170,4 @@ The code is at [github.com/juunghyun/cc-baton](https://github.com/juunghyun/cc-b
 
 Money still melts twice as fast. But I only explain things once✌️
 
-Next post: Want to work on AX (AI transformation) but have nowhere to do it? Then head to open source (becoming a contributor from scratch)
+Next post: [Want to work on AX (AI transformation) but have nowhere to do it? Then head to open source (becoming a contributor from scratch)](/en/posts/oss-from-scratch/)

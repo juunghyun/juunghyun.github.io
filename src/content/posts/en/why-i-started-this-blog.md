@@ -4,6 +4,7 @@ description: "Work got faster with AI, but my own growth seemed to stall. That's
 summary: "Writing down the problems I meet and how I solve them, in my own words"
 pubDatetime: 2026-09-22T09:00:00+09:00
 tags: [blog, AI]
+related: [perfect-excel-parser]
 ---
 
 Nobody works without an LLM anymore. People hand a pricey model the whole job and let it run. And honestly, it's worth the money. Even juniors can now take on the work they always wanted to do.
@@ -18,4 +19,4 @@ I'm not saying don't use AI. Skim the recent blogs of developers at big tech com
 
 This won't be "I tried some new tech." It'll be the problems I actually ran into and how I solved them. I'm writing them down to make them mine. And if you, the visitor, walk away with something too, even better.
 
-Next post: "The formats are all over the place, just build me a perfect parser," and how I handled it.
+Next post: ["The formats are all over the place, just build me a perfect parser," and how I handled it.](/en/posts/perfect-excel-parser/)

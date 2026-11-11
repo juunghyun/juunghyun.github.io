@@ -4,6 +4,7 @@ description: "Moving an SPA's refresh token into an HttpOnly cookie that JavaScr
 summary: "What HttpOnly stops and what it doesn't, plus the refresh race I found after shipping"
 pubDatetime: 2026-11-10T16:15:00+09:00
 tags: [Security, SSO, Cookie, Next.js]
+related: [cc-baton]
 ---
 
 I was handed an SSO ticket. My first thought was this.
@@ -160,4 +161,4 @@ I also looked up why every security attribute on cookies is off by default. Cook
 
 It took three days to add one HttpOnly. Most of those three days went into questions, not code. And honestly, the most valuable question came after shipping: what happens if it arrives twice at the same time... Always account for race conditions and concurrency. 😂
 
-Next post: Running two Claude accounts with less friction
+Next post: [Running two Claude accounts with less friction](/en/posts/cc-baton/)

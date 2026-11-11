@@ -4,6 +4,7 @@ description: "SPA의 refreshToken을 JS가 읽지 못하는 HttpOnly 쿠키로 �
 summary: "HttpOnly가 막는 것과 못 막는 것, 그리고 배포 뒤에 찾은 재발급 경합"
 pubDatetime: 2026-11-10T16:15:00+09:00
 tags: [Security, SSO, Cookie, Next.js]
+related: [cc-baton]
 ---
 
 SSO 이슈를 하나 받았다. 받고 나서 처음 든 생각은 이거였다.
@@ -160,4 +161,4 @@ Promise.all([refresh(), refresh()]).then(console.log); // [401, 200]
 
 HttpOnly 하나 붙이는 데 사흘이 걸렸다. 그 사흘의 대부분은 코드가 아니라 질문이었다. 사실 가장 값진 질문은 배포한 뒤에 나왔다. 동시에 두 번 오면 어떻게 되는가... race condition과 동시성을 언제나 고려하자. 😂
 
-다음 글: 클로드 계정 두 개를 더 쉽게 사용하기
+다음 글: [클로드 계정 두 개를 더 쉽게 사용하기](/posts/cc-baton/)

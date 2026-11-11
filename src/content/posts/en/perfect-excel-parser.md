@@ -4,6 +4,7 @@ description: "Pulling data out of Excel files with no fixed format: how I split 
 summary: "How I split the work between the LLM and code"
 pubDatetime: 2026-10-06T15:36:02+09:00
 tags: [LLM, Python, Excel, Kafka]
+related: [cc-baton]
 ---
 
 > "Shouldn't we have some AI in our product too?"
@@ -120,4 +121,4 @@ So I built a replay stub that captures LLM responses and plays them back. When t
 
 I'm still not sure we needed AI here. But I came away with one test for what to hand to the LLM and what to keep in code: did a person have to look at it and judge?
 
-Next post: Running two Claude accounts with less friction (a.k.a. burning money faster).
+Next post: [Running two Claude accounts with less friction (a.k.a. burning money faster).](/en/posts/cc-baton/)
