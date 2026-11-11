@@ -8,8 +8,9 @@ tags: [Claude Code, CLI, Python, Go]
 
 I use two Claude accounts. I pay for both. Money melts twice as fast😎 💸
 
-The two accounts have different limits, so I split my work between them. The problem was that work never ends at the size you first expected.  
-The moment you switch accounts, the conversation stays in the account it started in. On the other account I had to hand it off somehow.
+But even paying double, there are moments when the work stops. Work always grows past what you first expected, and a conversation in full swing hits its limit. The other account still has tokens left. But the conversation can't go there, because a conversation stays in the account it started in.
+
+Every time, I had to write a handoff summary and explain everything from the start on the other account.
 
 A summary is a loss. Why I dropped an approach, which files I had already read, what I was aiming for: all of that falls out. When you work with an agent, that context is the state of the work. So I built a small CLI that moves the whole conversation, [cc-baton](https://github.com/juunghyun/cc-baton).
 
